@@ -1,0 +1,13 @@
+{
+  "data" : [
+    {
+      "filename" : "my_public_key.pub",
+      "idiom" : "universal",
+      "universal-type-identifier" : "dyn.ah62d4rv4ge81a7pc"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

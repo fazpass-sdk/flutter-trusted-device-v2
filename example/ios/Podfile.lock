@@ -1,0 +1,39 @@
+PODS:
+  - DeviceKit (5.0.0)
+  - Flutter (1.0.0)
+  - flutter_trusted_device_v2 (0.0.1):
+    - Flutter
+    - ios-trusted-device-v2
+  - integration_test (0.0.1):
+    - Flutter
+  - ios-trusted-device-v2 (0.0.4):
+    - DeviceKit
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - flutter_trusted_device_v2 (from `.symlinks/plugins/flutter_trusted_device_v2/ios`)
+  - integration_test (from `.symlinks/plugins/integration_test/ios`)
+
+SPEC REPOS:
+  trunk:
+    - DeviceKit
+    - ios-trusted-device-v2
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  flutter_trusted_device_v2:
+    :path: ".symlinks/plugins/flutter_trusted_device_v2/ios"
+  integration_test:
+    :path: ".symlinks/plugins/integration_test/ios"
+
+SPEC CHECKSUMS:
+  DeviceKit: 0fd016a2cb67aca17c33dc23171cac270131eb88
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  flutter_trusted_device_v2: 5a9f30db5cc23f488da94df21e3fed9d7b18d21d
+  integration_test: 13825b8a9334a850581300559b8839134b124670
+  ios-trusted-device-v2: 660177a19ef09acb9e5752d5aec2f8308effd2d3
+
+PODFILE CHECKSUM: a57f30d18f102dd3ce366b1d62a55ecbef2158e5
+
+COCOAPODS: 1.12.0

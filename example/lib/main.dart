@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp> {
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initGenerateMetaState() async {
     await _fazpass.init("my_public_key.pub");
-    await _fazpass.enableSelected([SensitiveData.simNumbersAndOperators, SensitiveData.location]);
+    await _fazpass.enableSelected([SensitiveData.simNumbersAndOperators]);
 
     String meta;
     try {
