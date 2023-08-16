@@ -13,13 +13,15 @@ public class FlutterTrustedDeviceV2Plugin: NSObject, FlutterPlugin {
     switch call.method {
     case "init":
         let assetName = call.arguments as! String
-        Fazpass.shared.`init`(assetName: assetName)
+        Fazpass.shared.`init`(publicAssetName: assetName)
         result(nil)
     case "generateMeta":
-        Task {
-            await Fazpass.shared.generateMeta { meta in
+        Fazpass.shared.generateMeta { meta, error in
+            guard let e = error else {
                 result(meta)
+                return
             }
+            result(FlutterError(code: "0", message: e.localizedDescription, details: e))
         }
     case "enableSelected":
         let args = call.arguments as! Array<String>
