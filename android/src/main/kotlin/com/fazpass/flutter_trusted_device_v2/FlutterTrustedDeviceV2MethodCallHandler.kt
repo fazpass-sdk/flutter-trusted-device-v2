@@ -1,5 +1,6 @@
 package com.fazpass.flutter_trusted_device_v2
 
+import android.app.Activity
 import android.content.Context
 import com.fazpass.android_trusted_device_v2.Fazpass
 import com.fazpass.android_trusted_device_v2.SensitiveData
@@ -9,6 +10,8 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 
 class FlutterTrustedDeviceV2MethodCallHandler(private val context: Context) : MethodCallHandler {
 
+    var activity: Activity? = null
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "init" -> {
@@ -17,8 +20,14 @@ class FlutterTrustedDeviceV2MethodCallHandler(private val context: Context) : Me
                 result.success(null)
             }
             "generateMeta" -> {
-                Fazpass.instance.generateMeta(context) {
-                    result.success(it)
+                if (activity == null) return
+                Fazpass.instance.generateMeta(activity!!) { meta, error ->
+                    if (error != null) {
+                        result.error("0", error.message, error.cause)
+                    }
+                    else {
+                        result.success(meta)
+                    }
                 }
             }
             "enableSelected" -> {

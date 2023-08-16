@@ -33,7 +33,7 @@ class _MyAppState extends State<MyApp> {
     String meta;
     try {
       meta = await _fazpass.generateMeta() ?? 'Generate meta failed';
-    } on PlatformException {
+    } catch (e) {
       meta = 'Failed to generate meta.';
     }
 
