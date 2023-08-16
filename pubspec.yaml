@@ -1,7 +1,8 @@
 name: flutter_trusted_device_v2
-description: A new Flutter plugin project.
+description: Flutter version of Fazpass Trusted Device V2 SDK. This package focuses to generate meta which you can use to hit Fazpass rest API.
 version: 0.0.1
-homepage:
+homepage: https://fazpass.com
+repository: https://github.com/fazpass-sdk/flutter-trusted-device-v2
 
 environment:
   sdk: '>=3.0.6 <4.0.0'
