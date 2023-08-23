@@ -21,7 +21,7 @@ public class FlutterTrustedDeviceV2Plugin: NSObject, FlutterPlugin {
                 result(meta)
                 return
             }
-            result(FlutterError(code: "0", message: e.localizedDescription, details: e))
+            result(FlutterError(code: "0", message: e.localizedDescription, details: nil))
         }
     case "enableSelected":
         let args = call.arguments as! Array<String>

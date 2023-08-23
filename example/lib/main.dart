@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_trusted_device_v2/flutter_trusted_device_v2.dart';
 
 void main() {
@@ -33,7 +34,11 @@ class _MyAppState extends State<MyApp> {
     try {
       meta = await _fazpass.generateMeta() ?? 'Generate meta failed';
     } catch (e) {
-      meta = 'Failed to generate meta.';
+      if (e is PlatformException) {
+        meta = e.message!;
+      } else {
+        meta = 'Failed to generate meta.';
+      }
     }
 
     if (!mounted) return;
