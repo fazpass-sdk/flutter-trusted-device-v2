@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_trusted_device_v2/src/fazpass_exception.dart';
 import 'package:flutter_trusted_device_v2/src/sensitive_data.dart';
 
 import 'flutter_trusted_device_v2_platform_interface.dart';
@@ -16,8 +17,33 @@ class MethodChannelFlutterTrustedDeviceV2 extends FlutterTrustedDeviceV2Platform
   }
 
   @override
-  Future<String?> generateMeta() {
-    return methodChannel.invokeMethod<String>('generateMeta');
+  Future<String?> generateMeta() async {
+    String meta = '';
+    try {
+      meta = await methodChannel.invokeMethod<String>('generateMeta') ?? '';
+    } on PlatformException catch (e) {
+      switch (e.code) {
+        case 'fazpassE-biometricNoneEnrolled':
+          throw BiometricNoneEnrolledError(e);
+        case 'fazpassE-biometricAuthFailed':
+          throw BiometricAuthFailedError(e);
+        case 'fazpassE-biometricUnavailable':
+          throw BiometricUnavailableError(e);
+        case 'fazpassE-biometricUnsupported':
+          throw BiometricUnsupportedError(e);
+        case 'fazpassE-encryptionError':
+          throw EncryptionException(e);
+        case 'fazpassE-publicKeyNotExist':
+          throw PublicKeyNotExistException(e);
+        case 'fazpassE-uninitialized':
+          throw UninitializedException(e);
+        case 'fazpassE-biometricSecurityUpdateRequired':
+          throw BiometricSecurityUpdateRequiredError(e);
+        default:
+          throw UnknownError(e);
+      }
+    }
+    return meta;
   }
 
   @override
