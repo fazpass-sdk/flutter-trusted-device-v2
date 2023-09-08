@@ -4,7 +4,7 @@
 enum SensitiveData {
   /// AVAILABILITY: ANDROID, IOS
   ///
-  /// To enable location on android, make sure you require these permissions:
+  /// To enable location on android, make sure you ask user for these permissions:
   /// - android.permission.ACCESS_COARSE_LOCATION or android.permission.ACCESS_FINE_LOCATION
   /// - android.permission.FOREGROUND_SERVICE
   ///
@@ -17,7 +17,7 @@ enum SensitiveData {
   vpn,
   /// AVAILABILITY: ANDROID
   ///
-  /// To enable sim numbers and operators on android, make sure you require these permissions:
+  /// To enable sim numbers and operators on android, make sure you ask user for these permissions:
   /// - android.permission.READ_PHONE_NUMBERS
   /// - android.permission.READ_PHONE_STATE
   simNumbersAndOperators,
