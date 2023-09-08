@@ -1,7 +1,7 @@
 
 import 'package:flutter/services.dart';
 
-abstract class FazpassException extends PlatformException {
+sealed class FazpassException extends PlatformException {
   FazpassException(PlatformException e)
       : super(code: e.code, message: e.message);
 }

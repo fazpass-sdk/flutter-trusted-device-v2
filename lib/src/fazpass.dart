@@ -13,7 +13,7 @@ class Fazpass implements FlutterTrustedDeviceV2Platform {
   }
 
   @override
-  Future<String?> generateMeta() {
+  Future<String> generateMeta() {
     return FlutterTrustedDeviceV2Platform.instance.generateMeta();
   }
 

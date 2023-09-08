@@ -17,7 +17,7 @@ class MethodChannelFlutterTrustedDeviceV2 extends FlutterTrustedDeviceV2Platform
   }
 
   @override
-  Future<String?> generateMeta() async {
+  Future<String> generateMeta() async {
     String meta = '';
     try {
       meta = await methodChannel.invokeMethod<String>('generateMeta') ?? '';

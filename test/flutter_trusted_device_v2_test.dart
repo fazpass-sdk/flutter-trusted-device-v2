@@ -14,7 +14,7 @@ class MockFlutterTrustedDeviceV2Platform
   }
 
   @override
-  Future<String?> generateMeta() => Future.value('meta');
+  Future<String> generateMeta() => Future.value('meta');
 
   @override
   Future<void> init(String assetName) async {

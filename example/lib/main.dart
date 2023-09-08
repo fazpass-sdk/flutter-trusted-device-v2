@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_trusted_device_v2/flutter_trusted_device_v2.dart';
 
 void main() {
@@ -30,14 +29,38 @@ class _MyAppState extends State<MyApp> {
     await _fazpass.init("my_public_key.pub");
     await _fazpass.enableSelected([SensitiveData.simNumbersAndOperators]);
 
-    String meta;
+    String meta = 'Failed to generate meta.';
     try {
-      meta = await _fazpass.generateMeta() ?? 'Generate meta failed';
-    } catch (e) {
-      if (e is PlatformException) {
-        meta = e.message!;
-      } else {
-        meta = 'Failed to generate meta.';
+      meta = await _fazpass.generateMeta();
+    } on FazpassException catch (e) {
+      switch (e) {
+        case BiometricNoneEnrolledError():
+          // TODO
+          break;
+        case BiometricAuthFailedError():
+          // TODO
+          break;
+        case BiometricUnavailableError():
+          // TODO
+          break;
+        case BiometricUnsupportedError():
+          // TODO
+          break;
+        case EncryptionException():
+          // TODO
+          break;
+        case PublicKeyNotExistException():
+          // TODO
+          break;
+        case UninitializedException():
+          // TODO
+          break;
+        case BiometricSecurityUpdateRequiredError():
+          // TODO
+          break;
+        case UnknownError():
+          // TODO
+          break;
       }
     }
 

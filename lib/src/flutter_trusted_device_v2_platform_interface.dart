@@ -33,7 +33,7 @@ abstract class FlutterTrustedDeviceV2Platform extends PlatformInterface {
   /// Collect specific information and generate meta data from it as Base64 string.
   /// You can use this meta to hit Fazpass API endpoint. Will launch biometric authentication before
   /// generating meta. This future may produce error if biometric authentication failed or encryption error.
-  Future<String?> generateMeta();
+  Future<String> generateMeta();
 
   /// Sensitive data requires the user to grant certain permissions so it could be collected.
   /// All sensitive data collection is disabled by default, which means you have to enable each of
