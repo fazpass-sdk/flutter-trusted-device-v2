@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_trusted_device_v2/flutter_trusted_device_v2.dart';
-import 'package:flutter_trusted_device_v2/src/flutter_trusted_device_v2_method_channel.dart';
+import 'package:flutter_trusted_device_v2/src/flutter_trusted_device_v2_channel.dart';
 import 'package:flutter_trusted_device_v2/src/flutter_trusted_device_v2_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
@@ -21,13 +21,19 @@ class MockFlutterTrustedDeviceV2Platform
     if (assetName != 'rightPath/asset') throw Exception('path not found!');
     return;
   }
+
+  @override
+  Stream<CrossDeviceRequest> getCrossDeviceRequestStreamInstance() => const Stream.empty();
+
+  @override
+  Future<CrossDeviceRequest?> getCrossDeviceRequestFromIntent() => Future.value(null);
 }
 
 void main() {
 
-  test('$MethodChannelFlutterTrustedDeviceV2 is the default instance', () {
+  test('$ChannelFlutterTrustedDeviceV2 is the default instance', () {
     final FlutterTrustedDeviceV2Platform initialPlatform = FlutterTrustedDeviceV2Platform.instance;
-    expect(initialPlatform, isInstanceOf<MethodChannelFlutterTrustedDeviceV2>());
+    expect(initialPlatform, isInstanceOf<ChannelFlutterTrustedDeviceV2>());
   });
 
   group('Fazpass methods test', () {
@@ -38,7 +44,7 @@ void main() {
     });
 
     tearDown(() {
-      FlutterTrustedDeviceV2Platform.instance = MethodChannelFlutterTrustedDeviceV2();
+      FlutterTrustedDeviceV2Platform.instance = ChannelFlutterTrustedDeviceV2();
     });
 
     test('init', () async {

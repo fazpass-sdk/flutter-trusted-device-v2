@@ -1,7 +1,7 @@
 import 'package:flutter_trusted_device_v2/flutter_trusted_device_v2.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-import 'flutter_trusted_device_v2_method_channel.dart';
+import 'flutter_trusted_device_v2_channel.dart';
 
 abstract class FlutterTrustedDeviceV2Platform extends PlatformInterface {
   /// Constructs a FlutterTrustedDeviceV2Platform.
@@ -9,7 +9,7 @@ abstract class FlutterTrustedDeviceV2Platform extends PlatformInterface {
 
   static final Object _token = Object();
 
-  static FlutterTrustedDeviceV2Platform _instance = MethodChannelFlutterTrustedDeviceV2();
+  static FlutterTrustedDeviceV2Platform _instance = ChannelFlutterTrustedDeviceV2();
 
   /// The default instance of [FlutterTrustedDeviceV2Platform] to use.
   ///
@@ -44,4 +44,8 @@ abstract class FlutterTrustedDeviceV2Platform extends PlatformInterface {
   ///
   /// You can include any sensitive data you want to enable in [sensitiveData] parameter.
   Future<void> enableSelected(List<SensitiveData> sensitiveData);
+
+  Stream<CrossDeviceRequest> getCrossDeviceRequestStreamInstance();
+
+  Future<CrossDeviceRequest?> getCrossDeviceRequestFromIntent();
 }

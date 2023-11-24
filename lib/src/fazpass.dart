@@ -1,4 +1,6 @@
 
+import 'package:flutter_trusted_device_v2/src/cross_device_request.dart';
+
 import 'sensitive_data.dart';
 import 'flutter_trusted_device_v2_platform_interface.dart';
 
@@ -20,5 +22,15 @@ class Fazpass implements FlutterTrustedDeviceV2Platform {
   @override
   Future<void> enableSelected(List<SensitiveData> sensitiveData) {
     return FlutterTrustedDeviceV2Platform.instance.enableSelected(sensitiveData);
+  }
+
+  @override
+  Stream<CrossDeviceRequest> getCrossDeviceRequestStreamInstance() {
+    return FlutterTrustedDeviceV2Platform.instance.getCrossDeviceRequestStreamInstance();
+  }
+
+  @override
+  Future<CrossDeviceRequest?> getCrossDeviceRequestFromIntent() {
+    return FlutterTrustedDeviceV2Platform.instance.getCrossDeviceRequestFromIntent();
   }
 }

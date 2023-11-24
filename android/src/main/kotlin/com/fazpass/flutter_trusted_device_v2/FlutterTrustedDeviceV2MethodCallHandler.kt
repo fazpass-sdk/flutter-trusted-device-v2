@@ -87,6 +87,26 @@ class FlutterTrustedDeviceV2MethodCallHandler(private val context: Context) : Me
                 Fazpass.instance.enableSelected(*selected.toTypedArray())
                 result.success(null)
             }
+            "getCrossDeviceRequestFromFirstActivityIntent" -> {
+                if (activity == null) {
+                    result.error("fazpassE-noActivity", "No activity attached.", null)
+                    return
+                }
+                val request = Fazpass.instance.getCrossDeviceRequestFromFirstActivityIntent(activity!!.intent)
+                if (request == null) {
+                    result.success(null)
+                    return
+                }
+
+                result.success(mapOf(
+                    "merchant_app_id" to request.merchantAppId,
+                    "expired" to request.expired.toString(),
+                    "device_receive" to request.deviceReceive,
+                    "device_request" to request.deviceRequest,
+                    "device_id_receive" to request.deviceIdReceive,
+                    "device_id_request" to request.deviceIdRequest
+                ))
+            }
             else -> result.notImplemented()
         }
     }

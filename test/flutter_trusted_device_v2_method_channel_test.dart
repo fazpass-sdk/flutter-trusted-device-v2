@@ -1,12 +1,12 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_trusted_device_v2/flutter_trusted_device_v2.dart';
-import 'package:flutter_trusted_device_v2/src/flutter_trusted_device_v2_method_channel.dart';
+import 'package:flutter_trusted_device_v2/src/flutter_trusted_device_v2_channel.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  MethodChannelFlutterTrustedDeviceV2 platform = MethodChannelFlutterTrustedDeviceV2();
+  ChannelFlutterTrustedDeviceV2 platform = ChannelFlutterTrustedDeviceV2();
   MethodChannel? channel;
 
   bool isInitialized = false;
