@@ -7,7 +7,7 @@ Visit [official website](https://fazpass.com) for more information about the pro
 
 ## Minimum OS
 
-Android 23, IOS 13.0
+Android 24, IOS 13.0
 
 ## Getting Started
 

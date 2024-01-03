@@ -6,7 +6,7 @@ import 'package:flutter_trusted_device_v2/src/flutter_trusted_device_v2_channel.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  ChannelFlutterTrustedDeviceV2 platform = ChannelFlutterTrustedDeviceV2();
+  FlutterTrustedDeviceV2Channel platform = FlutterTrustedDeviceV2Channel();
   MethodChannel? channel;
 
   bool isInitialized = false;
@@ -52,19 +52,13 @@ void main() {
   });
 
   test('init', () async {
-    expectLater(() async => await platform.init('wrongPath/asset'), throwsA(isA<Exception>()));
+    expectLater(() async => await platform.init(androidAssetName: 'wrongPath/asset'), throwsA(isA<Exception>()));
     expect(isInitialized, false);
-    await platform.init('rightPath/asset');
+    await platform.init(androidAssetName: 'rightPath/asset');
     expect(isInitialized, true);
   });
 
   test('generate meta', () async {
     expectLater(await platform.generateMeta(), 'meta');
-  });
-
-  test('enable selected', () async {
-    expect(isLocationEnabled, false);
-    await platform.enableSelected([SensitiveData.location]);
-    expect(isLocationEnabled, true);
   });
 }

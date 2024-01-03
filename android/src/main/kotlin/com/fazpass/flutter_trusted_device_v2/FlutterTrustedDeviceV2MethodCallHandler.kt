@@ -2,16 +2,10 @@ package com.fazpass.flutter_trusted_device_v2
 
 import android.app.Activity
 import android.content.Context
-import com.fazpass.android_trusted_device_v2.BiometricAuthError
-import com.fazpass.android_trusted_device_v2.BiometricNoneEnrolledError
-import com.fazpass.android_trusted_device_v2.BiometricSecurityUpdateRequiredError
-import com.fazpass.android_trusted_device_v2.BiometricUnavailableError
-import com.fazpass.android_trusted_device_v2.BiometricUnsupportedError
-import com.fazpass.android_trusted_device_v2.EncryptionException
 import com.fazpass.android_trusted_device_v2.Fazpass
-import com.fazpass.android_trusted_device_v2.PublicKeyNotExistException
+import com.fazpass.android_trusted_device_v2.FazpassException
 import com.fazpass.android_trusted_device_v2.SensitiveData
-import com.fazpass.android_trusted_device_v2.UninitializedException
+import com.fazpass.android_trusted_device_v2.`object`.FazpassSettings
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -29,70 +23,79 @@ class FlutterTrustedDeviceV2MethodCallHandler(private val context: Context) : Me
             }
             "generateMeta" -> {
                 if (activity == null) return
-                Fazpass.instance.generateMeta(activity!!) { meta, error ->
+                val accountIndex = call.arguments as Int
+                Fazpass.instance.generateMeta(activity!!, accountIndex) { meta, error ->
                     when (error) {
-                        is BiometricNoneEnrolledError -> result.error(
+                        FazpassException.BiometricNoneEnrolledError -> result.error(
                             "fazpassE-biometricNoneEnrolled",
-                            error.message,
+                            error.exception.message,
                             null
                         )
-                        is BiometricAuthError -> result.error(
+                        FazpassException.BiometricAuthError -> result.error(
                             "fazpassE-biometricAuthFailed",
-                            error.message,
+                            error.exception.message,
                             null
                         )
-                        is BiometricUnavailableError -> result.error(
+                        FazpassException.BiometricUnavailableError -> result.error(
                             "fazpassE-biometricUnavailable",
-                            error.message,
+                            error.exception.message,
                             null
                         )
-                        is BiometricUnsupportedError -> result.error(
+                        FazpassException.BiometricUnsupportedError -> result.error(
                             "fazpassE-biometricUnsupported",
-                            error.message,
+                            error.exception.message,
                             null
                         )
-                        is EncryptionException -> result.error(
+                        FazpassException.EncryptionException -> result.error(
                             "fazpassE-encryptionError",
-                            error.message,
+                            error.exception.message,
                             null
                         )
-                        is PublicKeyNotExistException -> result.error(
+                        FazpassException.PublicKeyNotExistException -> result.error(
                             "fazpassE-publicKeyNotExist",
-                            error.message,
+                            error.exception.message,
                             null
                         )
-                        is UninitializedException -> result.error(
+                        FazpassException.UninitializedException -> result.error(
                             "fazpassE-uninitialized",
-                            error.message,
+                            error.exception.message,
                             null
                         )
-                        is BiometricSecurityUpdateRequiredError -> result.error(
+                        FazpassException.BiometricSecurityUpdateRequiredError -> result.error(
                             "fazpassE-biometricSecurityUpdateRequired",
-                            error.message,
+                            error.exception.message,
                             null
                         )
                         null -> result.success(meta)
                     }
                 }
             }
-            "enableSelected" -> {
-                val arguments = call.arguments as List<*>
-                val selected = arguments.mapNotNull {
-                    try {
-                        SensitiveData.valueOf(it as String)
-                    } catch (_: IllegalArgumentException) {
-                        null
-                    }
+            "generateSecretKeyForHighLevelBiometric" -> {
+                if (activity == null) return
+                try {
+                    Fazpass.instance.generateSecretKeyForHighLevelBiometric(activity!!)
+                    result.success(null)
+                } catch (e: Exception) {
+                    result.error("fazpassE-Error", e.message, null)
                 }
-                Fazpass.instance.enableSelected(*selected.toTypedArray())
+            }
+            "getSettingsForAccountIndex" -> {
+                val accountIndex = call.arguments as Int
+                val settings = Fazpass.instance.getSettingsForAccountIndex(accountIndex)
+                result.success(settings?.toString())
+            }
+            "setSettingsForAccountIndex" -> {
+                if (activity == null) return
+                val args = call.arguments as Map<*, *>
+                val accountIndex = args["accountIndex"] as Int
+                val settingsString = args["settings"] as String?
+                val settings = if (settingsString != null) FazpassSettings.fromString(settingsString) else null
+                Fazpass.instance.setSettingsForAccountIndex(activity!!, accountIndex, settings)
                 result.success(null)
             }
-            "getCrossDeviceRequestFromFirstActivityIntent" -> {
-                if (activity == null) {
-                    result.error("fazpassE-noActivity", "No activity attached.", null)
-                    return
-                }
-                val request = Fazpass.instance.getCrossDeviceRequestFromFirstActivityIntent(activity!!.intent)
+            "getCrossDeviceRequestFromNotification" -> {
+                if (activity == null) return
+                val request = Fazpass.instance.getCrossDeviceRequestFromNotification(activity!!.intent)
                 if (request == null) {
                     result.success(null)
                     return

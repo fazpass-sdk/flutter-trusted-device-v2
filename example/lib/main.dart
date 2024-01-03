@@ -26,8 +26,11 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initGenerateMetaState() async {
-    await _fazpass.init('my_public_key.pub');
-    await _fazpass.enableSelected([SensitiveData.simNumbersAndOperators]);
+    await _fazpass.init(androidAssetName: 'my_public_key.pub');
+    final settings = FazpassSettingsBuilder()
+        .enableSelectedSensitiveData([SensitiveData.simNumbersAndOperators])
+        .build();
+    await _fazpass.setSettingsForAccountIndex(0, settings);
 
     String meta = 'Failed to generate meta.';
     try {
@@ -56,9 +59,6 @@ class _MyAppState extends State<MyApp> {
           // TODO
           break;
         case BiometricSecurityUpdateRequiredError():
-          // TODO
-          break;
-        case UnknownError():
           // TODO
           break;
       }

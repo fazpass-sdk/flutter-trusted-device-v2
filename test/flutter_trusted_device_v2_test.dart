@@ -6,57 +6,66 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 class MockFlutterTrustedDeviceV2Platform
     with MockPlatformInterfaceMixin
-    implements FlutterTrustedDeviceV2Platform {
+    implements FlutterTrustedDeviceV2PlatformInterface {
 
   @override
-  Future<void> enableSelected(List<SensitiveData> sensitiveData) async {
+  Future<void> init({String? androidAssetName, String? iosAssetName, String? iosFcmAppId}) async {
+    if (androidAssetName != 'rightPath/asset') throw Exception('path not found!');
     return;
   }
 
   @override
-  Future<String> generateMeta() => Future.value('meta');
+  Future<String> generateMeta({int accountIndex=-1}) => Future.value('meta');
 
   @override
-  Future<void> init(String assetName) async {
-    if (assetName != 'rightPath/asset') throw Exception('path not found!');
-    return;
+  Future<void> generateSecretKeyForHighLevelBiometric() {
+    // TODO: implement generateSecretKeyForHighLevelBiometric
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<FazpassSettings?> getSettingsForAccountIndex(int accountIndex) {
+    // TODO: implement getSettingsForAccountIndex
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> setSettingsForAccountIndex(int accountIndex, FazpassSettings? settings) {
+    // TODO: implement setSettingsForAccountIndex
+    throw UnimplementedError();
   }
 
   @override
   Stream<CrossDeviceRequest> getCrossDeviceRequestStreamInstance() => const Stream.empty();
 
   @override
-  Future<CrossDeviceRequest?> getCrossDeviceRequestFromIntent() => Future.value(null);
+  Future<CrossDeviceRequest?> getCrossDeviceRequestFromNotification() => Future.value(null);
 }
 
 void main() {
 
-  test('$ChannelFlutterTrustedDeviceV2 is the default instance', () {
-    final FlutterTrustedDeviceV2Platform initialPlatform = FlutterTrustedDeviceV2Platform.instance;
-    expect(initialPlatform, isInstanceOf<ChannelFlutterTrustedDeviceV2>());
+  test('$FlutterTrustedDeviceV2Channel is the default instance', () {
+    final FlutterTrustedDeviceV2PlatformInterface initialPlatform = FlutterTrustedDeviceV2PlatformInterface.instance;
+    expect(initialPlatform, isInstanceOf<FlutterTrustedDeviceV2Channel>());
   });
 
   group('Fazpass methods test', () {
 
     setUp(() {
       MockFlutterTrustedDeviceV2Platform fakePlatform = MockFlutterTrustedDeviceV2Platform();
-      FlutterTrustedDeviceV2Platform.instance = fakePlatform;
+      FlutterTrustedDeviceV2PlatformInterface.instance = fakePlatform;
     });
 
     tearDown(() {
-      FlutterTrustedDeviceV2Platform.instance = ChannelFlutterTrustedDeviceV2();
+      FlutterTrustedDeviceV2PlatformInterface.instance = FlutterTrustedDeviceV2Channel();
     });
 
     test('init', () async {
-      expect(() => Fazpass.instance.init('wrongPath/asset'), throwsA(isA<Exception>()));
+      expect(() => Fazpass.instance.init(androidAssetName: 'wrongPath/asset'), throwsA(isA<Exception>()));
     });
 
     test('generate meta', () async {
       expectLater(await Fazpass.instance.generateMeta(), 'meta');
-    });
-
-    test('enable selected', () async {
-      expect(() => Fazpass.instance.enableSelected([]), isA<void>());
     });
   });
 }

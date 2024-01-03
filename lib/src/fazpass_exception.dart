@@ -38,7 +38,3 @@ class UninitializedException extends FazpassException {
 class BiometricSecurityUpdateRequiredError extends FazpassException {
   BiometricSecurityUpdateRequiredError(super.e);
 }
-/// IOS ONLY
-class UnknownError extends FazpassException {
-  UnknownError(super.e);
-}
