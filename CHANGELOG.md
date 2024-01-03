@@ -1,4 +1,8 @@
 
+# 1.0.1-dev.7
+
+Added high level biometric settings and updated ios counterpart.
+
 # 1.0.1-dev.6
 
 Fixed get notification data method.
