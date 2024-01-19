@@ -1,4 +1,6 @@
 
+import 'package:flutter_trusted_device_v2/flutter_trusted_device_v2.dart';
+
 import 'sensitive_data.dart';
 
 class FazpassSettings {
@@ -23,8 +25,16 @@ class FazpassSettings {
 }
 
 class FazpassSettingsBuilder {
-  List<SensitiveData> sensitiveDataList = [];
-  bool isBiometricLevelHigh = false;
+  List<SensitiveData> sensitiveDataList;
+  bool isBiometricLevelHigh;
+
+  FazpassSettingsBuilder()
+      : sensitiveDataList = [],
+        isBiometricLevelHigh = false;
+
+  FazpassSettingsBuilder.fromFazpassSettings(FazpassSettings settings)
+      : sensitiveDataList = [...settings.sensitiveData],
+        isBiometricLevelHigh = settings.isBiometricLevelHigh;
 
   FazpassSettingsBuilder enableSelectedSensitiveData(List<SensitiveData> sensitiveData) {
     for (final data in sensitiveData) {

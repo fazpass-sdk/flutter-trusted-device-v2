@@ -1,4 +1,9 @@
 
+# 1.0.1-dev.8
+
+Fixed settings doesn't apply to generate meta method.
+Added new named constructor to Fazpass Settings Builder.
+
 # 1.0.1-dev.7
 
 Added high level biometric settings and updated ios counterpart.

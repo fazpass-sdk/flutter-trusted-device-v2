@@ -1,6 +1,14 @@
 
 import 'dart:core';
 
+import 'package:flutter_trusted_device_v2/flutter_trusted_device_v2.dart';
+
+/// An object containing data from cross device notification request.
+///
+/// This object is only used as data retrieved from [Fazpass.getCrossDeviceRequestStreamInstance]
+/// and [Fazpass.getCrossDeviceRequestFromNotification].
+/// It's only constructor, [CrossDeviceRequest.fromData], isn't supposed to
+/// be called independently.
 class CrossDeviceRequest {
   final String merchantAppId;
   final int expired;
