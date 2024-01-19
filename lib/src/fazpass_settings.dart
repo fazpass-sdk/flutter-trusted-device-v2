@@ -1,8 +1,11 @@
 
 import 'package:flutter_trusted_device_v2/flutter_trusted_device_v2.dart';
 
-import 'sensitive_data.dart';
-
+/// An object to be used as settings for [Fazpass.setSettings] method.
+///
+/// This object isn't meant to be created by itself as it's only constructor,
+/// [FazpassSettings.fromString], isn't meant to be called independently.
+/// Use [FazpassSettingsBuilder] instead.
 class FazpassSettings {
   final List<SensitiveData> sensitiveData;
   final bool isBiometricLevelHigh;
@@ -24,24 +27,46 @@ class FazpassSettings {
   String toString() => "${sensitiveData.map((it) => it.name).join(",")};$isBiometricLevelHigh";
 }
 
+/// A builder to create [FazpassSettings] object.
+///
+/// To enable specific sensitive data collection, call [enableSelectedSensitiveData] method
+/// and specify which data you want to collect.
+/// Otherwise call [disableSelectedSensitiveData] method
+/// and specify which data you don't want to collect.
+/// To set biometric level to high, call [setBiometricLevelToHigh]. Otherwise call
+/// [setBiometricLevelToLow].
+/// To create [FazpassSettings] object with this builder configuration, call [build] method.
+/// ```dart
+/// FazpassSettings settings = FazpassSettingsBuilder()
+///   .enableSelectedSensitiveData([SensitiveData.location])
+///   .setBiometricLevelToHigh()
+///   .build();
+/// ```
+///
+/// You can also copy settings from [FazpassSettings] by using [FazpassSettingsBuilder.fromFazpassSettings]
+/// constructor.
+/// ```dart
+/// FazpassSettingsBuilder builder =
+///   FazpassSettingsBuilder.fromFazpassSettings(settings);
+/// ```
 class FazpassSettingsBuilder {
-  List<SensitiveData> sensitiveDataList;
-  bool isBiometricLevelHigh;
+  final List<SensitiveData> _sensitiveDataList;
+  bool _isBiometricLevelHigh;
 
   FazpassSettingsBuilder()
-      : sensitiveDataList = [],
-        isBiometricLevelHigh = false;
+      : _sensitiveDataList = [],
+        _isBiometricLevelHigh = false;
 
   FazpassSettingsBuilder.fromFazpassSettings(FazpassSettings settings)
-      : sensitiveDataList = [...settings.sensitiveData],
-        isBiometricLevelHigh = settings.isBiometricLevelHigh;
+      : _sensitiveDataList = [...settings.sensitiveData],
+        _isBiometricLevelHigh = settings.isBiometricLevelHigh;
 
   FazpassSettingsBuilder enableSelectedSensitiveData(List<SensitiveData> sensitiveData) {
     for (final data in sensitiveData) {
-      if (sensitiveDataList.contains(data)) {
+      if (_sensitiveDataList.contains(data)) {
         continue;
       } else {
-        sensitiveDataList.add(data);
+        _sensitiveDataList.add(data);
       }
     }
     return this;
@@ -49,8 +74,8 @@ class FazpassSettingsBuilder {
 
   FazpassSettingsBuilder disableSelectedSensitiveData(List<SensitiveData> sensitiveData) {
     for (final data in sensitiveData) {
-      if (sensitiveDataList.contains(data)) {
-        sensitiveDataList.remove(data);
+      if (_sensitiveDataList.contains(data)) {
+        _sensitiveDataList.remove(data);
       } else {
         continue;
       }
@@ -59,16 +84,16 @@ class FazpassSettingsBuilder {
   }
 
   FazpassSettingsBuilder setBiometricLevelToHigh() {
-    isBiometricLevelHigh = true;
+    _isBiometricLevelHigh = true;
     return this;
   }
 
   FazpassSettingsBuilder setBiometricLevelToLow() {
-    isBiometricLevelHigh = false;
+    _isBiometricLevelHigh = false;
     return this;
   }
 
   FazpassSettings build() => FazpassSettings._(
-    sensitiveDataList,
-    isBiometricLevelHigh);
+    _sensitiveDataList,
+    _isBiometricLevelHigh);
 }

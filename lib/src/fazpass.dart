@@ -1,6 +1,5 @@
 
 import 'package:flutter_trusted_device_v2/src/cross_device_request.dart';
-import 'package:flutter_trusted_device_v2/src/fazpass_exception.dart';
 import 'package:flutter_trusted_device_v2/src/fazpass_settings.dart';
 
 import 'flutter_trusted_device_v2_platform_interface.dart';
@@ -25,18 +24,18 @@ class Fazpass implements FlutterTrustedDeviceV2PlatformInterface {
   }
 
   @override
-  Future<void> generateSecretKeyForHighLevelBiometric() {
-    return FlutterTrustedDeviceV2PlatformInterface.instance.generateSecretKeyForHighLevelBiometric();
+  Future<void> generateNewSecretKey() {
+    return FlutterTrustedDeviceV2PlatformInterface.instance.generateNewSecretKey();
   }
 
   @override
-  Future<FazpassSettings?> getSettingsForAccountIndex(int accountIndex) {
-    return FlutterTrustedDeviceV2PlatformInterface.instance.getSettingsForAccountIndex(accountIndex);
+  Future<FazpassSettings?> getSettings(int accountIndex) {
+    return FlutterTrustedDeviceV2PlatformInterface.instance.getSettings(accountIndex);
   }
 
   @override
-  Future<void> setSettingsForAccountIndex(int accountIndex, FazpassSettings? settings) {
-    return FlutterTrustedDeviceV2PlatformInterface.instance.setSettingsForAccountIndex(accountIndex, settings);
+  Future<void> setSettings(int accountIndex, FazpassSettings? settings) {
+    return FlutterTrustedDeviceV2PlatformInterface.instance.setSettings(accountIndex, settings);
   }
 
   @override

@@ -1,5 +1,5 @@
 
-/// Enum class which contains all kinds of data that requires certain permissions before it
+/// An enum class which contains all kinds of data that requires certain steps before it
 /// could be collected.
 enum SensitiveData {
   /// AVAILABILITY: ANDROID, IOS
@@ -12,8 +12,7 @@ enum SensitiveData {
   location,
   /// AVAILABILITY: IOS
   ///
-  /// To enable vpn on ios, follow Apple guidelines on how to get special privilege to use NEVPNManager.
-  /// after you have the permission to do so, you can immediately enable it.
+  /// To enable vpn on ios, add Network Extensions capability in your project.
   vpn,
   /// AVAILABILITY: ANDROID
   ///

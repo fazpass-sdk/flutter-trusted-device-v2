@@ -18,19 +18,19 @@ class MockFlutterTrustedDeviceV2Platform
   Future<String> generateMeta({int accountIndex=-1}) => Future.value('meta');
 
   @override
-  Future<void> generateSecretKeyForHighLevelBiometric() {
+  Future<void> generateNewSecretKey() {
     // TODO: implement generateSecretKeyForHighLevelBiometric
     throw UnimplementedError();
   }
 
   @override
-  Future<FazpassSettings?> getSettingsForAccountIndex(int accountIndex) {
+  Future<FazpassSettings?> getSettings(int accountIndex) {
     // TODO: implement getSettingsForAccountIndex
     throw UnimplementedError();
   }
 
   @override
-  Future<void> setSettingsForAccountIndex(int accountIndex, FazpassSettings? settings) async {
+  Future<void> setSettings(int accountIndex, FazpassSettings? settings) async {
     FazpassSettingsBuilder();
     return;
   }

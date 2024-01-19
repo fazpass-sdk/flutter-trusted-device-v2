@@ -56,12 +56,12 @@ class FlutterTrustedDeviceV2Channel extends FlutterTrustedDeviceV2PlatformInterf
   }
 
   @override
-  Future<void> generateSecretKeyForHighLevelBiometric() async {
+  Future<void> generateNewSecretKey() async {
     return methodChannel.invokeMethod('generateSecretKeyForHighLevelBiometric');
   }
 
   @override
-  Future<FazpassSettings?> getSettingsForAccountIndex(int accountIndex) async {
+  Future<FazpassSettings?> getSettings(int accountIndex) async {
     final settingsString = await methodChannel.invokeMethod('getSettingsForAccountIndex', accountIndex);
     if (settingsString is String) {
       return FazpassSettings.fromString(settingsString);
@@ -70,7 +70,7 @@ class FlutterTrustedDeviceV2Channel extends FlutterTrustedDeviceV2PlatformInterf
   }
 
   @override
-  Future<void> setSettingsForAccountIndex(int accountIndex, FazpassSettings? settings) async {
+  Future<void> setSettings(int accountIndex, FazpassSettings? settings) async {
     return await methodChannel.invokeMethod('setSettingsForAccountIndex', {"accountIndex": accountIndex, "settings": settings?.toString()});
   }
 

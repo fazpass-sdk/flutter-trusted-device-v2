@@ -30,7 +30,7 @@ class _MyAppState extends State<MyApp> {
     final settings = FazpassSettingsBuilder()
         .enableSelectedSensitiveData([SensitiveData.simNumbersAndOperators])
         .build();
-    await _fazpass.setSettingsForAccountIndex(0, settings);
+    await _fazpass.setSettings(0, settings);
 
     String meta = 'Failed to generate meta.';
     try {

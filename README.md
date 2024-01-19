@@ -11,7 +11,8 @@ Android 24, IOS 13.0
 
 ## Getting Started
 
-Before using our product, make sure to contact us first to get keypair of public key and private key. 
+Before using this package, make sure to contact us first to get a keypair of public key and private key, 
+and an FCM App ID (iOS only).
 after you have each of them:
 - On Android: put the public key into the assets folder.
 - On iOS: reference the public key in your Xcode project Assets.
@@ -19,7 +20,11 @@ after you have each of them:
 This package main purpose is to generate meta which you can use to communicate with Fazpass rest API. But
 before calling generate meta method, you have to initialize it first by calling this method:
 ```dart
-Fazpass.instance.init("YOUR_PUBLIC_KEY_ASSET_NAME");
+Fazpass.instance.init(
+    androidAssetName: 'AndroidAssetName.pub',
+    iosAssetName: 'iosAssetName',
+    iosFcmAppId: 'iosFcmAppId'
+);
 ```
 
 ### Getting Started on Android
@@ -38,12 +43,13 @@ Then, you have to declare NSFaceIDUsageDescription in your Info.plist file to be
 
 ## Usage
 
-Call `Future<String> generateMeta()` method to generate meta. This method collects specific information and generates meta data as Base64 string. You can use this meta to hit Fazpass API endpoint. Will launch biometric authentication before generating meta. Meta will be empty string if exception is present.
+Call `generateMeta()` method to launch local authentication (biometric / password) and generate meta
+if local authentication is success. Otherwise throws `BiometricAuthFailedError`.
 
 ```dart
 String meta = '';
 try {
-  meta = await _fazpass.generateMeta();
+  meta = await Fazpass.instance.generateMeta();
 } on FazpassException catch (e) {
   switch (e) {
     case BiometricNoneEnrolledError():
@@ -68,9 +74,6 @@ try {
       // TODO
       break;
     case BiometricSecurityUpdateRequiredError():
-      // TODO
-      break;
-    case UnknownError():
       // TODO
       break;
   }
@@ -118,27 +121,54 @@ Produced when biometric authentication is finished with an error. (example: User
 Produced when device can't start biometric authentication because a security vulnerability has been discovered with one or
 more hardware sensors. The affected sensor(s) are unavailable until a security update has addressed the issue.
 
-### iOS Exclusive Errors
+## Set preferences for data collection
 
-#### UnknownError
+This package supports application with multiple accounts, and each account can have different settings for generating meta.
+To set preferences for data collection, call `setSettings(int accountIndex, FazpassSettings? settings)` method.
 
-Produced when an unknown error has been occured when trying to generate meta.
+```dart
+// index of an account
+int accountIndex = 0;
+// create preferences
+FazpassSettings settings = FazpassSettingsBuilder()
+  .enableSelectedSensitiveData([SensitiveData.location])
+  .setBiometricLevelToHigh()
+  .build();
+// save preferences
+await Fazpass.instance.setSettings(accountIndex, settings);
+
+// apply saved preferences by using the same account index
+String meta = await Fazpass.instance.generateMeta(accountIndex: accountIndex);
+
+// delete saved preferences
+await Fazpass.instance.setSettings(accountIndex, null);
+```
 
 ## Data Collection
 
-Data collected and stored in generated meta. Based on data sensitivity, data type is divided into two: General data and Sensitive data.
-General data is always collected while Sensitive data requires more complicated procedures to enable it.
+Data collected and stored in generated meta. Based on how data is collected, data type is divided into three: 
+General data, Sensitive data and Other.
+General data is always collected while Sensitive data requires more complicated procedures before they can be collected. 
+Other is a special case. They collect a complicated test result, and might change how `generateMeta()` method works.
 
-To enable Sensitive data collection, after calling fazpass init method, you need to call `enableSelected(vararg sensitiveData: SensitiveData)` method and
+To enable Sensitive data collection, you need to set preferences for them and
 specifies which sensitive data you want to collect.
 ```dart
-Fazpass.instance.enableSelected([
-    SensitiveData.location,
-    SensitiveData.simNumbersAndOperators,
-    SensitiveData.vpn
+FazpassSettingsBuilder builder = FazpassSettingsBuilder()
+    .enableSelectedSensitiveData([
+      SensitiveData.location,
+      SensitiveData.simNumbersAndOperators,
+      SensitiveData.vpn
 ]);
 ```
-Lastly, you have to follow the procedure to enable each of them as described in their own segment down below.
+Then, you have to follow the procedure on how to enable each of them as described in their own segment down below.
+
+For others, you also need to set preferences for them and specifies which you want to enable.
+```dart
+FazpassSettingsBuilder builder = FazpassSettingsBuilder()
+    .setBiometricLevelToHigh();
+```
+For detail, read their description in their own segment down below.
 
 ### General data collected
 
@@ -178,12 +208,22 @@ To enable sim numbers and operators on android, make sure you ask user for these
 
 AVAILABILITY: IOS
 
-To enable vpn on iOS, you have to add Network Extensions Entitlement to your project.
-To add this entitlement to an iOS app or a Mac App Store app, enable the Network Extensions capability in Xcode.
-To add this entitlement to a macOS app distributed outside of the Mac App Store, perform the following steps:
-1. In the Certificates, Identifiers and Profiles section of the developer site, enable the Network Extension capability for your Developer ID–signed app. Generate a new provisioning profile and download it.
-2. On your Mac, drag the downloaded provisioning profile to Xcode to install it.
-3. In your Xcode project, enable manual signing and select the provisioning profile downloaded earlier and its associated certificate.
-4. Update the project’s entitlements.plist to include the com.apple.developer.networking.networkextension key and the values of the entitlement.
+To enable vpn on iOS, enable the Network Extensions capability in Xcode project.
 
-[Apple documentation of network extensions entitlement](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_developer_networking_networkextension)
+### Other data collected
+
+#### High-level biometric
+
+Enabling high-level biometrics makes the local authentication in `generateMeta()` method use ONLY biometrics, 
+preventing user to use password as another option. After enabling this for the first time, immediately call `generateNewSecretKey()`
+method to create a secret key that will be stored safely in device keystore provider. From now on, calling `generateMeta()`
+with High-level biometric preferences will conduct an encryption & decryption test using the newly created secret key. 
+whenever the test is failed, it means the secret key has been invalidated because one these occurred:
+1. Device has enrolled another biometric information (new fingerprints, face, or iris)
+2. Device has cleared all biometric information
+3. Device removed their device passcode (password, pin, pattern, etc.)
+
+When secret key has been invalidated, trying to hit Fazpass Check API will fail. The recommended action for this is
+to sign out every account that has enabled high-level biometric and make them sign in again with low-level biometric settings.
+If you want to re-enable high-level biometrics after the secret key has been invalidated, make sure to 
+call `generateNewSecretKey()` once again.
