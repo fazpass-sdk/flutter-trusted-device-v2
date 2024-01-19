@@ -1,5 +1,6 @@
 
 import 'package:flutter_trusted_device_v2/src/cross_device_request.dart';
+import 'package:flutter_trusted_device_v2/src/fazpass_exception.dart';
 import 'package:flutter_trusted_device_v2/src/fazpass_settings.dart';
 
 import 'flutter_trusted_device_v2_platform_interface.dart';
@@ -20,7 +21,7 @@ class Fazpass implements FlutterTrustedDeviceV2PlatformInterface {
 
   @override
   Future<String> generateMeta({int accountIndex=-1}) {
-    return FlutterTrustedDeviceV2PlatformInterface.instance.generateMeta();
+    return FlutterTrustedDeviceV2PlatformInterface.instance.generateMeta(accountIndex: accountIndex);
   }
 
   @override

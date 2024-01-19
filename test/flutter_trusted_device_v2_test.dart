@@ -30,9 +30,9 @@ class MockFlutterTrustedDeviceV2Platform
   }
 
   @override
-  Future<void> setSettingsForAccountIndex(int accountIndex, FazpassSettings? settings) {
-    // TODO: implement setSettingsForAccountIndex
-    throw UnimplementedError();
+  Future<void> setSettingsForAccountIndex(int accountIndex, FazpassSettings? settings) async {
+    FazpassSettingsBuilder();
+    return;
   }
 
   @override

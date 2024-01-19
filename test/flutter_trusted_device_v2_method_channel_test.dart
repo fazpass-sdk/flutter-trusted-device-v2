@@ -1,6 +1,5 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_trusted_device_v2/flutter_trusted_device_v2.dart';
 import 'package:flutter_trusted_device_v2/src/flutter_trusted_device_v2_channel.dart';
 
 void main() {
@@ -10,11 +9,9 @@ void main() {
   MethodChannel? channel;
 
   bool isInitialized = false;
-  bool isLocationEnabled = false;
 
   setUp(() {
     isInitialized = false;
-    isLocationEnabled = false;
 
     channel = platform.methodChannel;
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
@@ -31,12 +28,6 @@ void main() {
             break;
           case 'generateMeta':
             return 'meta';
-          case 'enableSelected':
-            var arguments = methodCall.arguments as List<Object?>;
-            if (arguments.contains(SensitiveData.location.name)) {
-              isLocationEnabled = true;
-            }
-            break;
         }
         return null;
       },
@@ -45,7 +36,6 @@ void main() {
 
   tearDown(() {
     isInitialized = false;
-    isLocationEnabled = false;
 
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(channel!, null);
     channel = null;
