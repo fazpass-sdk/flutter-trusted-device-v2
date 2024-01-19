@@ -144,6 +144,11 @@ String meta = await Fazpass.instance.generateMeta(accountIndex: accountIndex);
 await Fazpass.instance.setSettings(accountIndex, null);
 ```
 
+`generateMeta()` accountIndex parameter has -1 as it's default value.
+
+> We strongly advised against saving preferences into default account index. If your application
+> only allows one active account, use 0 instead.
+
 ## Data Collection
 
 Data collected and stored in generated meta. Based on how data is collected, data type is divided into three: 
@@ -219,9 +224,9 @@ preventing user to use password as another option. After enabling this for the f
 method to create a secret key that will be stored safely in device keystore provider. From now on, calling `generateMeta()`
 with High-level biometric preferences will conduct an encryption & decryption test using the newly created secret key. 
 whenever the test is failed, it means the secret key has been invalidated because one these occurred:
-1. Device has enrolled another biometric information (new fingerprints, face, or iris)
-2. Device has cleared all biometric information
-3. Device removed their device passcode (password, pin, pattern, etc.)
+- Device has enrolled another biometric information (new fingerprints, face, or iris)
+- Device has cleared all biometric information
+- Device removed their device passcode (password, pin, pattern, etc.)
 
 When secret key has been invalidated, trying to hit Fazpass Check API will fail. The recommended action for this is
 to sign out every account that has enabled high-level biometric and make them sign in again with low-level biometric settings.
