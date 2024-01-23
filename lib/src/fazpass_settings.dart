@@ -7,10 +7,13 @@ import 'package:flutter_trusted_device_v2/flutter_trusted_device_v2.dart';
 /// [FazpassSettings.fromString], isn't meant to be called independently.
 /// Use [FazpassSettingsBuilder] instead.
 class FazpassSettings {
-  final List<SensitiveData> sensitiveData;
-  final bool isBiometricLevelHigh;
+  final List<SensitiveData> _sensitiveData;
+  final bool _isBiometricLevelHigh;
 
-  FazpassSettings._(this.sensitiveData, this.isBiometricLevelHigh);
+  List<SensitiveData> get sensitiveData => _sensitiveData.toList();
+  bool get isBiometricLevelHigh => _isBiometricLevelHigh;
+
+  FazpassSettings._(this._sensitiveData, this._isBiometricLevelHigh);
 
   factory FazpassSettings.fromString(String settingsString) {
     final splitter = settingsString.split(";");
@@ -24,7 +27,7 @@ class FazpassSettings {
   }
 
   @override
-  String toString() => "${sensitiveData.map((it) => it.name).join(",")};$isBiometricLevelHigh";
+  String toString() => "${_sensitiveData.map((it) => it.name).join(",")};$_isBiometricLevelHigh";
 }
 
 /// A builder to create [FazpassSettings] object.
@@ -50,23 +53,26 @@ class FazpassSettings {
 ///   FazpassSettingsBuilder.fromFazpassSettings(settings);
 /// ```
 class FazpassSettingsBuilder {
-  final List<SensitiveData> _sensitiveDataList;
+  final List<SensitiveData> _sensitiveData;
   bool _isBiometricLevelHigh;
 
+  List<SensitiveData> get sensitiveData => _sensitiveData.toList();
+  bool get isBiometricLevelHigh => _isBiometricLevelHigh;
+
   FazpassSettingsBuilder()
-      : _sensitiveDataList = [],
+      : _sensitiveData = [],
         _isBiometricLevelHigh = false;
 
   FazpassSettingsBuilder.fromFazpassSettings(FazpassSettings settings)
-      : _sensitiveDataList = [...settings.sensitiveData],
-        _isBiometricLevelHigh = settings.isBiometricLevelHigh;
+      : _sensitiveData = [...settings._sensitiveData],
+        _isBiometricLevelHigh = settings._isBiometricLevelHigh;
 
   FazpassSettingsBuilder enableSelectedSensitiveData(List<SensitiveData> sensitiveData) {
     for (final data in sensitiveData) {
-      if (_sensitiveDataList.contains(data)) {
+      if (_sensitiveData.contains(data)) {
         continue;
       } else {
-        _sensitiveDataList.add(data);
+        _sensitiveData.add(data);
       }
     }
     return this;
@@ -74,8 +80,8 @@ class FazpassSettingsBuilder {
 
   FazpassSettingsBuilder disableSelectedSensitiveData(List<SensitiveData> sensitiveData) {
     for (final data in sensitiveData) {
-      if (_sensitiveDataList.contains(data)) {
-        _sensitiveDataList.remove(data);
+      if (_sensitiveData.contains(data)) {
+        _sensitiveData.remove(data);
       } else {
         continue;
       }
@@ -94,6 +100,6 @@ class FazpassSettingsBuilder {
   }
 
   FazpassSettings build() => FazpassSettings._(
-    _sensitiveDataList,
+    _sensitiveData,
     _isBiometricLevelHigh);
 }

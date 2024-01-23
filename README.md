@@ -232,3 +232,31 @@ When secret key has been invalidated, trying to hit Fazpass Check API will fail.
 to sign out every account that has enabled high-level biometric and make them sign in again with low-level biometric settings.
 If you want to re-enable high-level biometrics after the secret key has been invalidated, make sure to 
 call `generateNewSecretKey()` once again.
+
+## Handle incoming Cross Device Request notification
+
+When application is in background state (not running), incoming cross device request will enter your system notification tray
+and shows them as a notification. Pressing said notification will launch the application with cross device request data as an argument.
+When application is in foreground state (currently running), incoming cross device request will immediately sent into the application
+without showing any notification.
+
+To retrieve cross device request when app is in background state, you have to call `getCrossDeviceRequestFromNotification()` method.
+```dart
+CrossDeviceRequest request = await Fazpass.instance.getCrossDeviceRequestFromNotification();
+```
+
+To retrieve cross device request when app is in foreground state, you have to get the stream instance by calling 
+`getCrossDeviceRequestStreamInstance()` then start listening to the stream.
+```dart
+// get the stream instance
+Stream<CrossDeviceRequest> requestStream = Fazpass.instance.getCrossDeviceRequestStreamInstance();
+
+// start listening to the stream
+StreamSubscription<CrossDeviceRequest> requestSubs = requestStream.listen((CrossDeviceRequest request) {
+  // called everytime there is an incoming cross device request notification.
+  print(request);
+});
+
+// stop listening to the stream
+requestSubs.cancel();
+```
