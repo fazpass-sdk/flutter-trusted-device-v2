@@ -46,7 +46,7 @@ class UninitializedException extends FazpassException {
 }
 
 /// Thrown when there is a major security update for user's device and user is
-/// required to do so immediately. Android only.
+/// required to update immediately. Android only.
 class BiometricSecurityUpdateRequiredError extends FazpassException {
   BiometricSecurityUpdateRequiredError(super.e);
 }

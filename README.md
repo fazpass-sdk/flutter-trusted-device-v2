@@ -129,11 +129,13 @@ To set preferences for data collection, call `setSettings(int accountIndex, Fazp
 ```dart
 // index of an account
 int accountIndex = 0;
+
 // create preferences
 FazpassSettings settings = FazpassSettingsBuilder()
   .enableSelectedSensitiveData([SensitiveData.location])
   .setBiometricLevelToHigh()
   .build();
+
 // save preferences
 await Fazpass.instance.setSettings(accountIndex, settings);
 
@@ -253,7 +255,7 @@ Stream<CrossDeviceRequest> requestStream = Fazpass.instance.getCrossDeviceReques
 
 // start listening to the stream
 StreamSubscription<CrossDeviceRequest> requestSubs = requestStream.listen((CrossDeviceRequest request) {
-  // called everytime there is an incoming cross device request notification.
+  // called everytime there is an incoming cross device request notification
   print(request);
 });
 

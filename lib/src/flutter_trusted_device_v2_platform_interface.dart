@@ -71,7 +71,7 @@ abstract class FlutterTrustedDeviceV2PlatformInterface extends PlatformInterface
 
   /// Retrieves the rules that has been set in [Fazpass.setSettings] method.
   ///
-  /// Retrieves a [FazpassSettings] object stored based on the [accountIndex] parameter.
+  /// Retrieves a stored [FazpassSettings] object based on the [accountIndex] parameter.
   /// Returns null if there is no stored settings for this [accountIndex].
   Future<FazpassSettings?> getSettings(int accountIndex);
 
