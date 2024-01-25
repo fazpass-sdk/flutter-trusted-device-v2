@@ -1,4 +1,8 @@
 
+# 1.0.1-dev.9
+
+Fixed set settings method throws error on ios.
+
 # 1.0.1-dev.8
 
 Fixed settings doesn't apply to generate meta method.

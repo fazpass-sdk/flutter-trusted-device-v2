@@ -100,7 +100,7 @@ public class FlutterTrustedDeviceV2Plugin: NSObject, FlutterPlugin {
             let args = call.arguments as! Dictionary<String, Any>
             var settings: FazpassSettings?
             if (args["settings"] is String) {
-                settings = FazpassSettings.fromString(args["String"] as! String)
+                settings = FazpassSettings.fromString(args["settings"] as! String)
             }
             Fazpass.shared.setFazpassSettingsForAccountIndex(accountIndex: args["accountIndex"] as! Int, settings: settings)
             result(nil)
