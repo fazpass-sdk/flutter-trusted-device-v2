@@ -34,18 +34,27 @@ Fazpass.instance.init(
 
 ### Getting Started on iOS
 
-1. In your Xcode project, open Assets.
+1. In your XCode project, open Assets.
 2. Add new asset as Data Set.
 3. Reference your public key into this asset.
 4. Name your asset.
 
 Then, you have to declare NSFaceIDUsageDescription in your Info.plist file to be able to generate meta, because generating meta requires user to do biometry authentication.
 
+Then, in your AppDelegate.swift file in your XCode project, override your `didReceiveRemoteNotification` function.
+```swift
+override func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+  // add this line
+  Fazpass.shared.getCrossDeviceRequestFromNotification(userInfo: userInfo)
+
+  completionHandler(UIBackgroundFetchResult.newData)
+}
+```
+
 ## Usage
 
 Call `generateMeta()` method to launch local authentication (biometric / password) and generate meta
 if local authentication is success. Otherwise throws `BiometricAuthFailedError`.
-
 ```dart
 String meta = '';
 try {
@@ -124,7 +133,7 @@ more hardware sensors. The affected sensor(s) are unavailable until a security u
 ## Set preferences for data collection
 
 This package supports application with multiple accounts, and each account can have different settings for generating meta.
-To set preferences for data collection, call `setSettings(int accountIndex, FazpassSettings? settings)` method.
+To set preferences for data collection, call `setSettings()` method.
 
 ```dart
 // index of an account
@@ -201,7 +210,7 @@ To enable location on android, make sure you ask user for these permissions:
 - android.permission.ACCESS_COARSE_LOCATION or android.permission.ACCESS_FINE_LOCATION
 - android.permission.FOREGROUND_SERVICE
 
-To enable location on ios, declare NSLocationWhenInUseUsageDescription in your Info.plist file
+To enable location on ios, declare NSLocationWhenInUseUsageDescription in your Info.plist file.
 
 #### Your device SIM numbers and operators (if available)
 
@@ -215,7 +224,7 @@ To enable sim numbers and operators on android, make sure you ask user for these
 
 AVAILABILITY: IOS
 
-To enable vpn on iOS, enable the Network Extensions capability in Xcode project.
+To enable vpn on iOS, enable the Network Extensions capability in your Xcode project.
 
 ### Other data collected
 
@@ -239,8 +248,7 @@ call `generateNewSecretKey()` once again.
 
 When application is in background state (not running), incoming cross device request will enter your system notification tray
 and shows them as a notification. Pressing said notification will launch the application with cross device request data as an argument.
-When application is in foreground state (currently running), incoming cross device request will immediately sent into the application
-without showing any notification.
+When application is in foreground state (currently running), incoming cross device request will immediately sent into the application without showing any notification.
 
 To retrieve cross device request when app is in background state, you have to call `getCrossDeviceRequestFromNotification()` method.
 ```dart
