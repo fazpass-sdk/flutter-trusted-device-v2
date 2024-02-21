@@ -87,14 +87,14 @@ public class FlutterTrustedDeviceV2Plugin: NSObject, FlutterPlugin {
             }
         case "generateSecretKeyForHighLevelBiometric":
             do {
-                try Fazpass.shared.generateSecretKeyForHighLevelBiometric()
+                try Fazpass.shared.generateNewSecretKey()
                 result(nil)
             } catch {
                 result(FlutterError(code: "fazpassE-Error", message: error.localizedDescription, details: nil))
             }
         case "getSettingsForAccountIndex":
             let accountIndex = call.arguments as! Int
-            let settings = Fazpass.shared.getFazpassSettingsForAccountIndex(accountIndex: accountIndex)
+            let settings = Fazpass.shared.getSettings(accountIndex: accountIndex)
             result(settings?.toString())
         case "setSettingsForAccountIndex":
             let args = call.arguments as! Dictionary<String, Any>
@@ -102,10 +102,10 @@ public class FlutterTrustedDeviceV2Plugin: NSObject, FlutterPlugin {
             if (args["settings"] is String) {
                 settings = FazpassSettings.fromString(args["settings"] as! String)
             }
-            Fazpass.shared.setFazpassSettingsForAccountIndex(accountIndex: args["accountIndex"] as! Int, settings: settings)
+            Fazpass.shared.setSettings(accountIndex: args["accountIndex"] as! Int, settings: settings)
             result(nil)
         case "getCrossDeviceRequestFromNotification":
-            let request = Fazpass.shared.getCrossDeviceRequestFromNotification()
+            let request = Fazpass.shared.getCrossDeviceRequestFromNotification(userInfo: nil)
             result(request?.toDict())
         default:
           result(FlutterMethodNotImplemented)

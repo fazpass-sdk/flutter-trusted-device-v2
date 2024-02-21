@@ -1,40 +1,7 @@
 
-# 1.0.1-dev.9
+## 2.0.0
 
-Fixed set settings method throws error on ios.
-
-# 1.0.1-dev.8
-
-Fixed settings doesn't apply to generate meta method.
-Added new named constructor to Fazpass Settings Builder.
-
-# 1.0.1-dev.7
-
-Added high level biometric settings and updated ios counterpart.
-
-# 1.0.1-dev.6
-
-Fixed get notification data method.
-
-## 1.0.1-dev.5
-
-Added method to get notification data when app is in background state.
-
-## 1.0.1-dev.4
-
-Fixed parsing problem.
-
-## 1.0.1-dev.3
-
-Added listener for fcm notification.
-
-## 1.0.1-dev.2
-
-Added log for fcm.
-
-## 1.0.1-dev.1
-
-Added fcm token to meta.
+Added high-level biometric functionality.
 
 ## 1.0.0
 
