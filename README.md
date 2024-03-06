@@ -9,6 +9,27 @@ Visit [official website](https://fazpass.com) for more information about the pro
 
 Android 24, IOS 13.0
 
+## Installation
+
+Run this command in your root project:
+
+`$ flutter pub add flutter_trusted_device_v2`
+
+This will add a line like this to your package's pubspec.yaml (and run an implicit flutter pub get):
+
+```yaml
+dependencies:
+  flutter_trusted_device_v2: ^<version>
+```
+
+Alternatively, your editor might support flutter pub get. Check the docs for your editor to learn more.
+
+Now in your Dart code, you can use:
+
+```dart
+import 'package:flutter_trusted_device_v2/flutter_trusted_device_v2.dart';
+```
+
 ## Getting Started
 
 Before using this package, make sure to contact us first to get a keypair of public key and private key, 
