@@ -40,6 +40,12 @@ class MockFlutterTrustedDeviceV2Platform
 
   @override
   Future<CrossDeviceRequest?> getCrossDeviceRequestFromNotification() => Future.value(null);
+
+  @override
+  Future<List<String>> getAppSignatures() {
+    // TODO: implement getAppSignatures
+    throw UnimplementedError();
+  }
 }
 
 void main() {

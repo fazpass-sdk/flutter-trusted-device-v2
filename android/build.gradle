@@ -2,7 +2,7 @@ group 'com.fazpass.flutter_trusted_device_v2'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.7.10'
+    ext.kotlin_version = '1.9.0'
     repositories {
         google()
         mavenCentral()
@@ -28,7 +28,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 31
+    compileSdk 34
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -45,13 +45,14 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 22
+        minSdk 24
+        targetSdk 34
     }
 
     dependencies {
         testImplementation 'org.jetbrains.kotlin:kotlin-test'
         testImplementation 'org.mockito:mockito-core:5.0.0'
-        implementation 'com.github.fazpass-sdk:android-trusted-device-v2:1.0.2-dev.9'
+        implementation 'com.github.fazpass-sdk:android-trusted-device-v2:2.0.1'
     }
 
     testOptions {

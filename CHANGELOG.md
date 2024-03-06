@@ -1,4 +1,10 @@
 
+## 2.0.1
+
+- Fixed some bugs in android.
+- Added getSignatures method for android.
+- Updated documentation.
+
 ## 2.0.0
 
 Added high-level biometric functionality.

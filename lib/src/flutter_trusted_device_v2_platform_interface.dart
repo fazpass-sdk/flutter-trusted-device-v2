@@ -90,4 +90,9 @@ abstract class FlutterTrustedDeviceV2PlatformInterface extends PlatformInterface
   /// contained in that notification. Will return null if user launched the application
   /// normally.
   Future<CrossDeviceRequest?> getCrossDeviceRequestFromNotification();
+
+  /// Retrieves application signatures.
+  ///
+  /// Only works in android. Will return empty list in iOS.
+  Future<List<String>> getAppSignatures();
 }

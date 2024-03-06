@@ -19,7 +19,7 @@ class CrossDeviceRequest {
 
   CrossDeviceRequest.fromData(Map data) :
         merchantAppId = data["merchant_app_id"] as String,
-        expired = int.tryParse(data["expired"] as String) ?? 0,
+        expired = data["expired"] as int,
         deviceReceive = data["device_receive"] as String,
         deviceRequest = data["device_request"] as String,
         deviceIdReceive = data["device_id_receive"] as String,

@@ -47,4 +47,9 @@ class Fazpass implements FlutterTrustedDeviceV2PlatformInterface {
   Future<CrossDeviceRequest?> getCrossDeviceRequestFromNotification() {
     return FlutterTrustedDeviceV2PlatformInterface.instance.getCrossDeviceRequestFromNotification();
   }
+
+  @override
+  Future<List<String>> getAppSignatures() {
+    return FlutterTrustedDeviceV2PlatformInterface.instance.getAppSignatures();
+  }
 }

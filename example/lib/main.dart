@@ -21,20 +21,36 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    initGenerateMetaState();
+
+    _fazpass.getAppSignatures().then((value) => print("APPSGN: $value"));
+
+    initializeFazpass()
+      .then((value) => setFazpassSettings())
+      .then((value) => generateMeta());
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initGenerateMetaState() async {
+  Future<void> initializeFazpass() async {
+    // initialize fazpass package
     await _fazpass.init(androidAssetName: 'my_public_key.pub');
-    final settings = FazpassSettingsBuilder()
-        .enableSelectedSensitiveData([SensitiveData.simNumbersAndOperators])
-        .build();
-    await _fazpass.setSettings(0, settings);
+  }
 
+  Future<void> setFazpassSettings() async {
+    // create settings
+    final settings = FazpassSettingsBuilder()
+        .enableSelectedSensitiveData([SensitiveData.simNumbersAndOperators, SensitiveData.location])
+        .setBiometricLevelToHigh()
+        .build();
+    // generate new secret key so we can use high-level biometric
+    await _fazpass.generateNewSecretKey();
+    // save settings
+    await _fazpass.setSettings(1, settings);
+  }
+
+  Future<void> generateMeta() async {
     String meta = 'Failed to generate meta.';
     try {
-      meta = await _fazpass.generateMeta();
+      // generate meta and apply saved settings for account index 1
+      meta = await _fazpass.generateMeta(accountIndex: 1);
     } on FazpassException catch (e) {
       switch (e) {
         case BiometricNoneEnrolledError():

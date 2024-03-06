@@ -84,4 +84,14 @@ class FlutterTrustedDeviceV2Channel extends FlutterTrustedDeviceV2PlatformInterf
     final data = await methodChannel.invokeMethod('getCrossDeviceRequestFromNotification');
     return data == null ? null : CrossDeviceRequest.fromData(data);
   }
+
+  @override
+  Future<List<String>> getAppSignatures() async {
+    if (Platform.isAndroid) {
+      final signatures = await methodChannel.invokeListMethod<String>('helper:getAppSignatures');
+      return signatures ?? [];
+    }
+
+    return [];
+  }
 }

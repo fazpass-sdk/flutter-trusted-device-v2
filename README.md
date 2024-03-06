@@ -32,11 +32,7 @@ import 'package:flutter_trusted_device_v2/flutter_trusted_device_v2.dart';
 
 ## Getting Started
 
-Before using this package, make sure to contact us first to get a keypair of public key and private key, 
-and an FCM App ID (iOS only).
-after you have each of them:
-- On Android: put the public key into the assets folder.
-- On iOS: reference the public key in your Xcode project Assets.
+Before using this package, make sure to contact us first to get a public key and an FCM App ID (iOS only).
 
 This package main purpose is to generate meta which you can use to communicate with Fazpass rest API. But
 before calling generate meta method, you have to initialize it first by calling this method:
@@ -50,11 +46,52 @@ Fazpass.instance.init(
 
 ### Getting Started on Android
 
-1. Open android folder, then go to app/src/main/assets/ (if assets folder doesn't exist, create a new one)
+Setup your public key:
+1. Open your android folder, then go to app/src/main/assets/ (if assets folder doesn't exist, create a new one)
 2. Put the public key in this folder
+
+Then, open your android MainActivity file (app/src/main/kotlin/<app_package>/MainActivity.kt) and make some changes:
+```kotlin
+// Change this import:
+// import io.flutter.embedding.android.FlutterActivity
+// into this:
+import io.flutter.embedding.android.FlutterFragmentActivity
+
+// Change MainActivity superclass from FlutterActivity to FlutterFragmentActivity
+class MainActivity: /*FlutterActivity()*/ FlutterFragmentActivity() {
+    // ...
+}
+```
+
+#### Retrieving your application signatures
+
+When creating a new merchant app in Fazpass Dashboard, there is a "signature" input.
+
+![Fazpass Dashboard create new merchant app image](fazpass_dashboard_add_merchant.png)
+
+Here's how to get this signature:
+
+Add this line of code in your main widget initState() method
+```dart
+@override
+void initState() {
+  super.initState();
+  
+  // add this line
+  Fazpass.instance.getAppSignatures().then((value) => print("APPSGN: $value"));
+}
+```
+Then build apk for release. Launch it while your device is still connected and debugging in your pc.
+Open logcat and query for `APPSGN`. It's value is an array, will look something like this: `[Gw+6AWbS7l7JQ7Umb1zcs1aNA8M=]`.
+If item is more than one, pick just one of them. Copy the signature `Gw+6AWbS7l7JQ7Umb1zcs1aNA8M=` and fill the signature
+of your merchant app with this value.
+
+After you uploaded your apk or abb into the playstore, download your app from the playstore then check your app's signatures again.
+If it's different, make sure to update the signature value of your merchant app.
 
 ### Getting Started on iOS
 
+Setup your public key:
 1. In your XCode project, open Assets.
 2. Add new asset as Data Set.
 3. Reference your public key into this asset.
@@ -65,6 +102,7 @@ Then, you have to declare NSFaceIDUsageDescription in your Info.plist file to be
 Then, in your AppDelegate.swift file in your XCode project, override your `didReceiveRemoteNotification` function.
 ```swift
 override func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+  
   // add this line
   Fazpass.shared.getCrossDeviceRequestFromNotification(userInfo: userInfo)
 

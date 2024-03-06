@@ -12,7 +12,7 @@ class FlutterTrustedDeviceV2CDStreamHandler(context: Context) : EventChannel.Str
         stream.listen {
             events?.success(mapOf(
                 "merchant_app_id" to it.merchantAppId,
-                "expired" to it.expired.toString(),
+                "expired" to it.expired,
                 "device_receive" to it.deviceReceive,
                 "device_request" to it.deviceRequest,
                 "device_id_receive" to it.deviceIdReceive,

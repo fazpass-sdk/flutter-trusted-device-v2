@@ -73,7 +73,7 @@ class FlutterTrustedDeviceV2MethodCallHandler(private val context: Context) : Me
             "generateSecretKeyForHighLevelBiometric" -> {
                 if (activity == null) return
                 try {
-                    Fazpass.instance.generateSecretKeyForHighLevelBiometric(activity!!)
+                    Fazpass.instance.generateNewSecretKey(activity!!)
                     result.success(null)
                 } catch (e: Exception) {
                     result.error("fazpassE-Error", e.message, null)
@@ -81,7 +81,7 @@ class FlutterTrustedDeviceV2MethodCallHandler(private val context: Context) : Me
             }
             "getSettingsForAccountIndex" -> {
                 val accountIndex = call.arguments as Int
-                val settings = Fazpass.instance.getSettingsForAccountIndex(accountIndex)
+                val settings = Fazpass.instance.getSettings(accountIndex)
                 result.success(settings?.toString())
             }
             "setSettingsForAccountIndex" -> {
@@ -90,7 +90,7 @@ class FlutterTrustedDeviceV2MethodCallHandler(private val context: Context) : Me
                 val accountIndex = args["accountIndex"] as Int
                 val settingsString = args["settings"] as String?
                 val settings = if (settingsString != null) FazpassSettings.fromString(settingsString) else null
-                Fazpass.instance.setSettingsForAccountIndex(activity!!, accountIndex, settings)
+                Fazpass.instance.setSettings(activity!!, accountIndex, settings)
                 result.success(null)
             }
             "getCrossDeviceRequestFromNotification" -> {
@@ -103,12 +103,17 @@ class FlutterTrustedDeviceV2MethodCallHandler(private val context: Context) : Me
 
                 result.success(mapOf(
                     "merchant_app_id" to request.merchantAppId,
-                    "expired" to request.expired.toString(),
+                    "expired" to request.expired,
                     "device_receive" to request.deviceReceive,
                     "device_request" to request.deviceRequest,
                     "device_id_receive" to request.deviceIdReceive,
                     "device_id_request" to request.deviceIdRequest
                 ))
+            }
+            "helper:getAppSignatures" -> {
+                if (activity == null) return
+                val appSignatures = Fazpass.helper.getAppSignatures(activity!!)
+                result.success(appSignatures)
             }
             else -> result.notImplemented()
         }
