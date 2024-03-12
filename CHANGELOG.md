@@ -1,4 +1,8 @@
 
+## 2.0.2
+
+- Added android namespace for newer AGP compatibility
+
 ## 2.0.1
 
 - Fixed some bugs in android.
