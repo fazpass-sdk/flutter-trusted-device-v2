@@ -53,7 +53,7 @@ android {
     dependencies {
         testImplementation 'org.jetbrains.kotlin:kotlin-test'
         testImplementation 'org.mockito:mockito-core:5.0.0'
-        implementation 'com.github.fazpass-sdk:android-trusted-device-v2:2.0.1'
+        implementation 'com.github.fazpass-sdk:android-trusted-device-v2:2.0.2'
     }
 
     testOptions {

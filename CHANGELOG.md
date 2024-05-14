@@ -1,4 +1,8 @@
 
+## 2.0.3
+
+- fixed biometric auth on android 10 and lower
+
 ## 2.0.2
 
 - Added android namespace for newer AGP compatibility
