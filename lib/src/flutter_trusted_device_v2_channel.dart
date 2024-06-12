@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_trusted_device_v2/src/cross_device_request.dart';
+import 'package:flutter_trusted_device_v2/src/cross_device_data.dart';
 import 'package:flutter_trusted_device_v2/src/fazpass_exception.dart';
 import 'package:flutter_trusted_device_v2/src/fazpass_settings.dart';
 
@@ -14,7 +14,7 @@ class FlutterTrustedDeviceV2Channel extends FlutterTrustedDeviceV2PlatformInterf
   @visibleForTesting
   final methodChannel = const MethodChannel('flutter_trusted_device_v2');
   @visibleForTesting
-  final eventChannel = const EventChannel('flutter_trusted_device_v2_cd_request');
+  final eventChannel = const EventChannel('flutter_trusted_device_v2_cd_event');
 
   @override
   Future<void> init({String? androidAssetName, String? iosAssetName, String? iosFcmAppId}) async {
@@ -57,12 +57,12 @@ class FlutterTrustedDeviceV2Channel extends FlutterTrustedDeviceV2PlatformInterf
 
   @override
   Future<void> generateNewSecretKey() async {
-    return methodChannel.invokeMethod('generateSecretKeyForHighLevelBiometric');
+    return methodChannel.invokeMethod('generateNewSecretKey');
   }
 
   @override
   Future<FazpassSettings?> getSettings(int accountIndex) async {
-    final settingsString = await methodChannel.invokeMethod('getSettingsForAccountIndex', accountIndex);
+    final settingsString = await methodChannel.invokeMethod('getSettings', accountIndex);
     if (settingsString is String) {
       return FazpassSettings.fromString(settingsString);
     }
@@ -71,18 +71,18 @@ class FlutterTrustedDeviceV2Channel extends FlutterTrustedDeviceV2PlatformInterf
 
   @override
   Future<void> setSettings(int accountIndex, FazpassSettings? settings) async {
-    return await methodChannel.invokeMethod('setSettingsForAccountIndex', {"accountIndex": accountIndex, "settings": settings?.toString()});
+    return await methodChannel.invokeMethod('setSettings', {"accountIndex": accountIndex, "settings": settings?.toString()});
   }
 
   @override
-  Stream<CrossDeviceRequest> getCrossDeviceRequestStreamInstance() {
-    return eventChannel.receiveBroadcastStream().map((event) => CrossDeviceRequest.fromData(event));
+  Stream<CrossDeviceData> getCrossDeviceDataStreamInstance() {
+    return eventChannel.receiveBroadcastStream().map((event) => CrossDeviceData.fromData(event));
   }
 
   @override
-  Future<CrossDeviceRequest?> getCrossDeviceRequestFromNotification() async {
-    final data = await methodChannel.invokeMethod('getCrossDeviceRequestFromNotification');
-    return data == null ? null : CrossDeviceRequest.fromData(data);
+  Future<CrossDeviceData?> getCrossDeviceDataFromNotification() async {
+    final data = await methodChannel.invokeMethod('getCrossDeviceDataFromNotification');
+    return data == null ? null : CrossDeviceData.fromData(data);
   }
 
   @override

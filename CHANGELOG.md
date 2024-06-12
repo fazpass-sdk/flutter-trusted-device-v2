@@ -1,4 +1,8 @@
 
+## 3.0.0-dev.1
+
+- Changed cross device listener behavior to follow the latest update of seamless "cross device notification" flow (not implemented in iOS yet)
+
 ## 2.0.3
 
 - fixed biometric auth on android 10 and lower

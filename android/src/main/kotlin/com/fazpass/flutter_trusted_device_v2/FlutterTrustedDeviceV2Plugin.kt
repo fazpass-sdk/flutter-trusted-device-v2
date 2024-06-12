@@ -22,7 +22,7 @@ class FlutterTrustedDeviceV2Plugin: FlutterPlugin, ActivityAware {
     handler = FlutterTrustedDeviceV2MethodCallHandler(flutterPluginBinding.applicationContext)
     channel.setMethodCallHandler(handler)
 
-    cdEventChannel = EventChannel(flutterPluginBinding.binaryMessenger, "flutter_trusted_device_v2_cd_request")
+    cdEventChannel = EventChannel(flutterPluginBinding.binaryMessenger, "flutter_trusted_device_v2_cd_event")
     cdEventHandler = FlutterTrustedDeviceV2CDStreamHandler(flutterPluginBinding.applicationContext)
     cdEventChannel.setStreamHandler(cdEventHandler)
   }

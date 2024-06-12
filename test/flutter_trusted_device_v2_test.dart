@@ -36,10 +36,10 @@ class MockFlutterTrustedDeviceV2Platform
   }
 
   @override
-  Stream<CrossDeviceRequest> getCrossDeviceRequestStreamInstance() => const Stream.empty();
+  Stream<CrossDeviceData> getCrossDeviceDataStreamInstance() => const Stream.empty();
 
   @override
-  Future<CrossDeviceRequest?> getCrossDeviceRequestFromNotification() => Future.value(null);
+  Future<CrossDeviceData?> getCrossDeviceDataFromNotification() => Future.value(null);
 
   @override
   Future<List<String>> getAppSignatures() {

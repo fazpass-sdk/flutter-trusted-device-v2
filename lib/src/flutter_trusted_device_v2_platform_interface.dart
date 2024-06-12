@@ -75,21 +75,15 @@ abstract class FlutterTrustedDeviceV2PlatformInterface extends PlatformInterface
   /// Returns null if there is no stored settings for this [accountIndex].
   Future<FazpassSettings?> getSettings(int accountIndex);
 
-  /// Retrieves the stream instance of cross device request.
-  ///
-  /// Before you listen to cross device login request stream, make sure these requirements
-  /// have been met:
-  /// - Device has been enrolled.
-  /// - Device is currently trusted (See Fazpass documentation for the definition of "trusted").
-  /// - Application is in "Logged In" state.
-  Stream<CrossDeviceRequest> getCrossDeviceRequestStreamInstance();
+  /// Retrieves the stream instance of cross device notification data.
+  Stream<CrossDeviceData> getCrossDeviceDataStreamInstance();
 
-  /// Retrieves a [CrossDeviceRequest] object obtained from notification.
+  /// Retrieves a [CrossDeviceData] object obtained from notification.
   ///
   /// If user launched the application from notification, this method will return data
   /// contained in that notification. Will return null if user launched the application
   /// normally.
-  Future<CrossDeviceRequest?> getCrossDeviceRequestFromNotification();
+  Future<CrossDeviceData?> getCrossDeviceDataFromNotification();
 
   /// Retrieves application signatures.
   ///

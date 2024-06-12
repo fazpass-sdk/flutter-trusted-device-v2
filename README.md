@@ -304,29 +304,38 @@ to sign out every account that has enabled high-level biometric and make them si
 If you want to re-enable high-level biometrics after the secret key has been invalidated, make sure to 
 call `generateNewSecretKey()` once again.
 
-## Handle incoming Cross Device Request notification
+## Handle incoming Cross Device Notification
 
-When application is in background state (not running), incoming cross device request will enter your system notification tray
-and shows them as a notification. Pressing said notification will launch the application with cross device request data as an argument.
-When application is in foreground state (currently running), incoming cross device request will immediately sent into the application without showing any notification.
+When application is in background state (not running), incoming cross device notification will enter your system notification tray
+and shows them as a notification. Pressing said notification will launch the application with cross device data as an argument.
+When application is in foreground state (currently running), incoming cross device notification will immediately sent into the application
+without showing any notification.
 
-To retrieve cross device request when app is in background state, you have to call `getCrossDeviceRequestFromNotification()` method.
+To retrieve cross device notification data when app is in background state, you have to call `getCrossDeviceDataFromNotification()` method.
 ```dart
-CrossDeviceRequest request = await Fazpass.instance.getCrossDeviceRequestFromNotification();
+CrossDeviceData data = await Fazpass.instance.getCrossDeviceDataFromNotification();
 ```
 
-To retrieve cross device request when app is in foreground state, you have to get the stream instance by calling 
-`getCrossDeviceRequestStreamInstance()` then start listening to the stream.
+To retrieve cross device notification data when app is in foreground state, you have to get the stream instance by calling
+`getCrossDeviceDataStreamInstance()` then start listening to the stream.
 ```dart
 // get the stream instance
-Stream<CrossDeviceRequest> requestStream = Fazpass.instance.getCrossDeviceRequestStreamInstance();
+Stream<CrossDeviceData> crossDeviceStream = Fazpass.instance.getCrossDeviceDataStreamInstance();
 
 // start listening to the stream
-StreamSubscription<CrossDeviceRequest> requestSubs = requestStream.listen((CrossDeviceRequest request) {
-  // called everytime there is an incoming cross device request notification
-  print(request);
+StreamSubscription<CrossDeviceData> crossDeviceSubs = crossDeviceStream.listen((CrossDeviceData data) {
+  // called everytime there is an incoming cross device notification
+  print(data);
+  
+  if (data.status == "request") {
+    String notificationId = data.notificationId!;
+    print(notificationId);
+  } else if (data.status == "validate") {
+    String action = data.action!;
+    print(action);
+  }
 });
 
 // stop listening to the stream
-requestSubs.cancel();
+crossDeviceSubs.cancel();
 ```

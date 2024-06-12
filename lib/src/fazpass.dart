@@ -1,5 +1,5 @@
 
-import 'package:flutter_trusted_device_v2/src/cross_device_request.dart';
+import 'package:flutter_trusted_device_v2/src/cross_device_data.dart';
 import 'package:flutter_trusted_device_v2/src/fazpass_settings.dart';
 
 import 'flutter_trusted_device_v2_platform_interface.dart';
@@ -39,13 +39,13 @@ class Fazpass implements FlutterTrustedDeviceV2PlatformInterface {
   }
 
   @override
-  Stream<CrossDeviceRequest> getCrossDeviceRequestStreamInstance() {
-    return FlutterTrustedDeviceV2PlatformInterface.instance.getCrossDeviceRequestStreamInstance();
+  Stream<CrossDeviceData> getCrossDeviceDataStreamInstance() {
+    return FlutterTrustedDeviceV2PlatformInterface.instance.getCrossDeviceDataStreamInstance();
   }
 
   @override
-  Future<CrossDeviceRequest?> getCrossDeviceRequestFromNotification() {
-    return FlutterTrustedDeviceV2PlatformInterface.instance.getCrossDeviceRequestFromNotification();
+  Future<CrossDeviceData?> getCrossDeviceDataFromNotification() {
+    return FlutterTrustedDeviceV2PlatformInterface.instance.getCrossDeviceDataFromNotification();
   }
 
   @override

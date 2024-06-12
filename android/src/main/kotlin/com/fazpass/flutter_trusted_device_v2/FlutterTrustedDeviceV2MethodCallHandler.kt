@@ -70,7 +70,7 @@ class FlutterTrustedDeviceV2MethodCallHandler(private val context: Context) : Me
                     }
                 }
             }
-            "generateSecretKeyForHighLevelBiometric" -> {
+            "generateNewSecretKey" -> {
                 if (activity == null) return
                 try {
                     Fazpass.instance.generateNewSecretKey(activity!!)
@@ -79,12 +79,12 @@ class FlutterTrustedDeviceV2MethodCallHandler(private val context: Context) : Me
                     result.error("fazpassE-Error", e.message, null)
                 }
             }
-            "getSettingsForAccountIndex" -> {
+            "getSettings" -> {
                 val accountIndex = call.arguments as Int
                 val settings = Fazpass.instance.getSettings(accountIndex)
                 result.success(settings?.toString())
             }
-            "setSettingsForAccountIndex" -> {
+            "setSettings" -> {
                 if (activity == null) return
                 val args = call.arguments as Map<*, *>
                 val accountIndex = args["accountIndex"] as Int
@@ -93,22 +93,15 @@ class FlutterTrustedDeviceV2MethodCallHandler(private val context: Context) : Me
                 Fazpass.instance.setSettings(activity!!, accountIndex, settings)
                 result.success(null)
             }
-            "getCrossDeviceRequestFromNotification" -> {
+            "getCrossDeviceDataFromNotification" -> {
                 if (activity == null) return
-                val request = Fazpass.instance.getCrossDeviceRequestFromNotification(activity!!.intent)
+                val request = Fazpass.instance.getCrossDeviceDataFromNotification(activity!!.intent)
                 if (request == null) {
                     result.success(null)
                     return
                 }
 
-                result.success(mapOf(
-                    "merchant_app_id" to request.merchantAppId,
-                    "expired" to request.expired,
-                    "device_receive" to request.deviceReceive,
-                    "device_request" to request.deviceRequest,
-                    "device_id_receive" to request.deviceIdReceive,
-                    "device_id_request" to request.deviceIdRequest
-                ))
+                result.success(request.toMap())
             }
             "helper:getAppSignatures" -> {
                 if (activity == null) return
