@@ -64,6 +64,58 @@ class MainActivity: /*FlutterActivity()*/ FlutterFragmentActivity() {
 }
 ```
 
+After that, open your styles.xml file (app/src/main/res/values/styles.xml) and change the parent theme to AppCompat theme (or descendant):
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Theme applied to the Android Window while the process is starting when the OS's Dark Mode setting is off -->
+    <!-- change parent LaunchTheme from this: -->
+    <!-- <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar"> -->
+    <!-- to this: -->
+    <style name="LaunchTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Show a splash screen on the activity. Automatically removed when
+             the Flutter engine draws its first frame -->
+        <item name="android:windowBackground">@drawable/launch_background</item>
+    </style>
+    <!-- Theme applied to the Android Window as soon as the process has started.
+         This theme determines the color of the Android Window while your
+         Flutter UI initializes, as well as behind your Flutter UI while its
+         running.
+
+         This Theme is only used starting with V2 of Flutter's Android embedding. -->
+    <!-- change parent NormalTheme from this: -->
+    <!-- <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar"> -->
+    <!-- to this: -->
+    <style name="NormalTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowBackground">?android:colorBackground</item>
+    </style>
+</resources>
+```
+
+If you have the night variant styles (app/src/main/res/values-night/styles.xml), then you have to change it to dark AppCompat theme:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Theme applied to the Android Window while the process is starting when the OS's Dark Mode setting is on -->
+    <style name="LaunchTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Show a splash screen on the activity. Automatically removed when
+             the Flutter engine draws its first frame -->
+        <item name="android:windowBackground">@drawable/launch_background</item>
+    </style>
+    <!-- Theme applied to the Android Window as soon as the process has started.
+         This theme determines the color of the Android Window while your
+         Flutter UI initializes, as well as behind your Flutter UI while its
+         running.
+
+         This Theme is only used starting with V2 of Flutter's Android embedding. -->
+    <style name="NormalTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">?android:colorBackground</item>
+    </style>
+</resources>
+```
+
 #### Retrieving your application signatures
 
 When creating a new merchant app in Fazpass Dashboard, there is a "signature" input.
