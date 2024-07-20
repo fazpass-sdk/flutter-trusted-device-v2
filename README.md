@@ -157,7 +157,7 @@ Then, in your AppDelegate.swift file in your XCode project, override your `didRe
 override func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
   
   // add this line
-  Fazpass.shared.getCrossDeviceRequestFromNotification(userInfo: userInfo)
+  Fazpass.shared.getCrossDeviceDataFromNotification(userInfo: userInfo)
 
   completionHandler(UIBackgroundFetchResult.newData)
 }

@@ -1,7 +1,10 @@
+## 3.0.0-dev.2
+
+- SDK 3.0.0 Major Update implemented in iOS
 
 ## 3.0.0-dev.1
 
-- Changed cross device listener behavior to follow the latest update of seamless "cross device notification" flow (not implemented in iOS yet)
+- SDK 3.0.0 Major Update: Changed cross device listener behavior to follow the latest update of seamless "cross device notification" flow (not implemented in iOS yet)
 
 ## 2.0.3
 

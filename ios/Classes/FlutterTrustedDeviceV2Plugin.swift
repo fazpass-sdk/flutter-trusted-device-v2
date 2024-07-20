@@ -6,7 +6,7 @@ public class FlutterTrustedDeviceV2Plugin: NSObject, FlutterPlugin {
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "flutter_trusted_device_v2", binaryMessenger: registrar.messenger())
-        let crossDeviceEvent = FlutterEventChannel(name: "flutter_trusted_device_v2_cd_request", binaryMessenger: registrar.messenger())
+        let crossDeviceEvent = FlutterEventChannel(name: "flutter_trusted_device_v2_cd_event", binaryMessenger: registrar.messenger())
         let instance = FlutterTrustedDeviceV2Plugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
         crossDeviceEvent.setStreamHandler(CrossDeviceEventHandler())
@@ -85,18 +85,18 @@ public class FlutterTrustedDeviceV2Plugin: NSObject, FlutterPlugin {
                     )
                 }
             }
-        case "generateSecretKeyForHighLevelBiometric":
+        case "generateNewSecretKey":
             do {
                 try Fazpass.shared.generateNewSecretKey()
                 result(nil)
             } catch {
                 result(FlutterError(code: "fazpassE-Error", message: error.localizedDescription, details: nil))
             }
-        case "getSettingsForAccountIndex":
+        case "getSettings":
             let accountIndex = call.arguments as! Int
             let settings = Fazpass.shared.getSettings(accountIndex: accountIndex)
             result(settings?.toString())
-        case "setSettingsForAccountIndex":
+        case "setSettings":
             let args = call.arguments as! Dictionary<String, Any>
             var settings: FazpassSettings?
             if (args["settings"] is String) {
@@ -104,8 +104,8 @@ public class FlutterTrustedDeviceV2Plugin: NSObject, FlutterPlugin {
             }
             Fazpass.shared.setSettings(accountIndex: args["accountIndex"] as! Int, settings: settings)
             result(nil)
-        case "getCrossDeviceRequestFromNotification":
-            let request = Fazpass.shared.getCrossDeviceRequestFromNotification(userInfo: nil)
+        case "getCrossDeviceDataFromNotification":
+            let request = Fazpass.shared.getCrossDeviceDataFromNotification(userInfo: nil)
             result(request?.toDict())
         default:
           result(FlutterMethodNotImplemented)
@@ -114,7 +114,7 @@ public class FlutterTrustedDeviceV2Plugin: NSObject, FlutterPlugin {
     
     class CrossDeviceEventHandler: NSObject, FlutterStreamHandler {
         
-        private let stream = Fazpass.shared.getCrossDeviceRequestStreamInstance()
+        private let stream = Fazpass.shared.getCrossDeviceDataStreamInstance()
         
         func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
             stream.listen { request in
@@ -129,18 +129,5 @@ public class FlutterTrustedDeviceV2Plugin: NSObject, FlutterPlugin {
         }
         
         
-    }
-}
-
-extension CrossDeviceRequest {
-    func toDict() -> [String: Any] {
-        return [
-            "merchant_app_id": self.merchantAppId,
-            "expired": self.expired,
-            "device_receive": self.deviceReceive,
-            "device_request": self.deviceRequest,
-            "device_id_receive": self.deviceIdReceive,
-            "device_id_request": self.deviceIdRequest
-        ]
     }
 }
