@@ -31,7 +31,7 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
   
-  pod 'ios-trusted-device-v2', '3.0.0-dev.2'
+  pod 'ios-trusted-device-v2', '3.0.0'
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
   target 'RunnerTests' do
     inherit! :search_paths
