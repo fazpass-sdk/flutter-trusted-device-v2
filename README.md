@@ -12,24 +12,12 @@ Android 24, IOS 13.0
 
 ## Installation
 
-Run this command in your root project:
+For installation, please refer to these documentation:
 
-`$ flutter pub add flutter_trusted_device_v2`
+Android: https://github.com/fazpass/seamless-documentation/blob/main/README.Android.md#installation
+IOS: https://github.com/fazpass/seamless-documentation/blob/main/README.iOS.md#installation
 
-This will add a line like this to your package's pubspec.yaml (and run an implicit flutter pub get):
-
-```yaml
-dependencies:
-  flutter_trusted_device_v2: ^<version>
-```
-
-Alternatively, your editor might support flutter pub get. Check the docs for your editor to learn more.
-
-Now in your Dart code, you can use:
-
-```dart
-import 'package:flutter_trusted_device_v2/flutter_trusted_device_v2.dart';
-```
+After the installation is finished, go back to this documentation.
 
 ## Getting Started
 
