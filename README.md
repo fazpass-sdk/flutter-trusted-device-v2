@@ -123,12 +123,7 @@ class FazpassMethodCallHandler(
             }
             "getCrossDeviceDataFromNotification" -> {
                 val request = fazpass.getCrossDeviceDataFromNotification(activity.intent)
-                if (request == null) {
-                    result.success(null)
-                    return
-                }
-
-                result.success(request.toMap())
+                result.success(request?.toMap())
             }
             "getAppSignatures" -> {
                 val appSignatures = fazpass.getAppSignatures(activity)
