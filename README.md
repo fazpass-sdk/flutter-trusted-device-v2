@@ -53,20 +53,28 @@ class FazpassPlugin(
     activity: FragmentActivity
 ): FlutterPlugin {
 
-    private val callHandler = FazpassMethodCallHandler(activity)
+    private val fazpass = FazpassFactory.getInstance()
+    private val callHandler = FazpassMethodCallHandler(activity, fazpass)
+    private val cdStreamHandler = FazpassCDStreamHandler(activity, fazpass)
     private lateinit var channel: MethodChannel
+    private lateinit var cdChannel: EventChannel
 
     companion object {
         private const val CHANNEL = "com.fazpass.trusted-device"
+        private const val CD_CHANNEL = "com.fazpass.trusted-device-cd"
     }
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(binding.binaryMessenger, CHANNEL)
         channel.setMethodCallHandler(callHandler)
+        cdChannel = EventChannel(binding.binaryMessenger, CD_CHANNEL)
+        cdChannel.setStreamHandler(cdStreamHandler)
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
+        cdStreamHandler.onCancel(null)
+        cdChannel.setStreamHandler(null)
     }
 }
 ```
@@ -75,13 +83,12 @@ class FazpassPlugin(
 
 ```kotlin
 class FazpassMethodCallHandler(
-    private val activity: FragmentActivity
+    private val activity: FragmentActivity,
+    private val fazpass: Fazpass
 ): MethodChannel.MethodCallHandler {
 
-    private val fazpass = FazpassFactory.getInstance()
-
     init {
-        fazpass.init(activity, "YOUR-PUBLIC-KEY.pub")
+        fazpass.init(activity, "new-public-key.pub")
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
@@ -134,6 +141,32 @@ class FazpassMethodCallHandler(
     }
 }
 ```
+
+4. Create FazpassCDStreamHandler class:
+
+```kotlin
+class FazpassCDStreamHandler(
+    activity: FragmentActivity,
+    fazpass: Fazpass
+): EventChannel.StreamHandler {
+
+    private val stream = fazpass.getCrossDeviceDataStreamInstance(activity)
+
+    override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
+        stream.listen {
+            events?.success(it.toMap())
+        }
+    }
+
+    override fun onCancel(arguments: Any?) {
+        stream.close()
+    }
+}
+```
+
+### Using native code in Flutter
+
+
 
 ## Getting Started
 
