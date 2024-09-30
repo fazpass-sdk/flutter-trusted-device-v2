@@ -17,7 +17,128 @@ For installation, please refer to these documentation:
 Android: https://github.com/fazpass/seamless-documentation/blob/main/README.Android.md#installation <br>
 IOS: https://github.com/fazpass/seamless-documentation/blob/main/README.iOS.md#installation <br>
 
-After the installation is finished, go back to this documentation.
+After the installation is finished, go back immediately to this documentation.
+
+## Bridging between native SDK and Flutter Application
+
+To use native SDK on your flutter application, you have to bridge it by writing native code in your native project, then import it in your flutter project.
+
+### Writing Native Code in Android
+
+Make sure Fazpass SDK is installed correctly by importing the SDK in your android project. If there is no error, then continue reading.
+
+1. Open your android project, then find your main activity file (app/src/main/kotlin/<app_package>/MainActivity.kt). Then make these changes:
+
+```kotlin
+// Change this import:
+// import io.flutter.embedding.android.FlutterActivity
+// into this:
+import io.flutter.embedding.android.FlutterFragmentActivity
+
+// Change MainActivity superclass from FlutterActivity to FlutterFragmentActivity
+class MainActivity: /*FlutterActivity()*/ FlutterFragmentActivity() {
+    // ...
+
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
+        flutterEngine.plugins.add(FazpassPlugin(this))
+    }
+}
+```
+
+2. Create the FazpassPlugin class:
+
+```kotlin
+class FazpassPlugin(
+    activity: FragmentActivity
+): FlutterPlugin {
+
+    private val callHandler = FazpassMethodCallHandler(activity)
+    private lateinit var channel: MethodChannel
+
+    companion object {
+        private const val CHANNEL = "com.fazpass.trusted-device"
+    }
+
+    override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        channel = MethodChannel(binding.binaryMessenger, CHANNEL)
+        channel.setMethodCallHandler(callHandler)
+    }
+
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        channel.setMethodCallHandler(null)
+    }
+}
+```
+
+3. Create the FazpassMethodCallHandler class:
+
+```kotlin
+class FazpassMethodCallHandler(
+    private val activity: FragmentActivity
+): MethodChannel.MethodCallHandler {
+
+    private val fazpass = FazpassFactory.getInstance()
+
+    init {
+        fazpass.init(activity, "YOUR-PUBLIC-KEY.pub")
+    }
+
+    override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
+        when (call.method) {
+            "generateMeta" -> {
+                val accountIndex = call.arguments as Int
+                fazpass.generateMeta(activity, accountIndex) { meta, error ->
+                    if (error == null) {
+                        result.success(meta)
+                        return@generateMeta
+                    }
+                    result.error(
+                        "fazpass-${error.name}",
+                        error.exception.message,
+                        null
+                    )
+                }
+            }
+            "generateNewSecretKey" -> {
+                try {
+                    fazpass.generateNewSecretKey(activity)
+                    result.success(null)
+                } catch (e: Exception) {
+                    result.error("fazpass-Error", e.message, null)
+                }
+            }
+            "getSettings" -> {
+                val accountIndex = call.arguments as Int
+                val settings = fazpass.getSettings(accountIndex)
+                result.success(settings?.toString())
+            }
+            "setSettings" -> {
+                val args = call.arguments as Map<*, *>
+                val accountIndex = args["accountIndex"] as Int
+                val settingsString = args["settings"] as String?
+                val settings = if (settingsString != null) FazpassSettings.fromString(settingsString) else null
+                fazpass.setSettings(activity, accountIndex, settings)
+                result.success(null)
+            }
+            "getCrossDeviceDataFromNotification" -> {
+                val request = fazpass.getCrossDeviceDataFromNotification(activity.intent)
+                if (request == null) {
+                    result.success(null)
+                    return
+                }
+
+                result.success(request.toMap())
+            }
+            "getAppSignatures" -> {
+                val appSignatures = fazpass.getAppSignatures(activity)
+                result.success(appSignatures)
+            }
+            else -> result.notImplemented()
+        }
+    }
+}
+```
 
 ## Getting Started
 
@@ -39,20 +160,7 @@ Setup your public key:
 1. Open your android folder, then go to app/src/main/assets/ (if assets folder doesn't exist, create a new one)
 2. Put the public key in this folder
 
-Then, open your android MainActivity file (app/src/main/kotlin/<app_package>/MainActivity.kt) and make some changes:
-```kotlin
-// Change this import:
-// import io.flutter.embedding.android.FlutterActivity
-// into this:
-import io.flutter.embedding.android.FlutterFragmentActivity
-
-// Change MainActivity superclass from FlutterActivity to FlutterFragmentActivity
-class MainActivity: /*FlutterActivity()*/ FlutterFragmentActivity() {
-    // ...
-}
-```
-
-After that, open your styles.xml file (app/src/main/res/values/styles.xml) and change the parent theme to AppCompat theme (or descendant):
+Then, open your styles.xml file (app/src/main/res/values/styles.xml) and change the parent theme to AppCompat theme (or descendant):
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
