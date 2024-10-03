@@ -166,7 +166,233 @@ class FazpassCDStreamHandler(
 
 ### Using native code in Flutter
 
+1. Create Fazpass class:
 
+```dart
+class Fazpass {
+  static const _CHANNEL = 'com.fazpass.trusted-device';
+  static const _CD_CHANNEL = 'com.fazpass.trusted-device-cd';
+
+  static const instance = Fazpass();
+  
+  const Fazpass();
+
+  final methodChannel = const MethodChannel(_CHANNEL);
+  final eventChannel = const EventChannel(_CD_CHANNEL);
+
+  Future<String> generateMeta({int accountIndex=-1}) async {
+    String meta = '';
+    try {
+      meta = await methodChannel.invokeMethod<String>('generateMeta', accountIndex) ?? '';
+    } on PlatformException catch (e) {
+      switch (e.code) {
+        case 'fazpass-BiometricNoneEnrolledError':
+          throw BiometricNoneEnrolledError(e);
+        case 'fazpass-BiometricAuthFailedError':
+          throw BiometricAuthFailedError(e);
+        case 'fazpass-BiometricUnavailableError':
+          throw BiometricUnavailableError(e);
+        case 'fazpass-BiometricUnsupportedError':
+          throw BiometricUnsupportedError(e);
+        case 'fazpass-PublicKeyNotExistException':
+          throw PublicKeyNotExistException(e);
+        case 'fazpass-UninitializedException':
+          throw UninitializedException(e);
+        case 'fazpass-BiometricSecurityUpdateRequiredError':
+          throw BiometricSecurityUpdateRequiredError(e);
+        case 'fazpass-EncryptionException':
+        default:
+          throw EncryptionException(e);
+      }
+    }
+    return meta;
+  }
+
+  Future<void> generateNewSecretKey() async {
+    return methodChannel.invokeMethod('generateNewSecretKey');
+  }
+
+  Future<FazpassSettings?> getSettings(int accountIndex) async {
+    final settingsString = await methodChannel.invokeMethod('getSettings', accountIndex);
+    if (settingsString is String) {
+      return FazpassSettings.fromString(settingsString);
+    }
+    return null;
+  }
+
+  Future<void> setSettings(int accountIndex, FazpassSettings? settings) async {
+    return await methodChannel.invokeMethod('setSettings', {"accountIndex": accountIndex, "settings": settings?.toString()});
+  }
+
+  Stream<CrossDeviceData> getCrossDeviceDataStreamInstance() {
+    return eventChannel.receiveBroadcastStream().map((event) => CrossDeviceData.fromData(event));
+  }
+
+  Future<CrossDeviceData?> getCrossDeviceDataFromNotification() async {
+    final data = await methodChannel.invokeMethod('getCrossDeviceDataFromNotification');
+    return data == null ? null : CrossDeviceData.fromData(data);
+  }
+
+  Future<List<String>> getAppSignatures() async {
+    if (Platform.isAndroid) {
+      final signatures = await methodChannel.invokeListMethod<String>('getAppSignatures');
+      return signatures ?? [];
+    }
+
+    return [];
+  }
+}
+```
+
+2. Create CrossDeviceData class:
+
+```dart
+class CrossDeviceData {
+  final String merchantAppId;
+  final String deviceReceive;
+  final String deviceRequest;
+  final String deviceIdReceive;
+  final String deviceIdRequest;
+  final String expired;
+  final String status;
+  final String? notificationId;
+  final String? action;
+
+  CrossDeviceData.fromData(Map data) :
+        merchantAppId = data["merchant_app_id"] as String,
+        deviceReceive = data["device_receive"] as String,
+        deviceRequest = data["device_request"] as String,
+        deviceIdReceive = data["device_id_receive"] as String,
+        deviceIdRequest = data["device_id_request"] as String,
+        expired = data["expired"] as String,
+        status = data["status"] as String,
+        notificationId = data["notification_id"] as String?,
+        action = data["action"] as String?;
+}
+```
+
+3. Create FazpassException classes:
+
+```dart
+import 'package:flutter/services.dart';
+
+sealed class FazpassException extends PlatformException {
+  FazpassException(PlatformException e)
+      : super(code: e.code, message: e.message);
+}
+
+class BiometricNoneEnrolledError extends FazpassException {
+  BiometricNoneEnrolledError(super.e);
+}
+
+class BiometricAuthFailedError extends FazpassException {
+  BiometricAuthFailedError(super.e);
+}
+
+class BiometricUnavailableError extends FazpassException {
+  BiometricUnavailableError(super.e);
+}
+
+class BiometricUnsupportedError extends FazpassException {
+  BiometricUnsupportedError(super.e);
+}
+
+class EncryptionException extends FazpassException {
+  EncryptionException(super.e);
+}
+
+class PublicKeyNotExistException extends FazpassException {
+  PublicKeyNotExistException(super.e);
+}
+
+class UninitializedException extends FazpassException {
+  UninitializedException(super.e);
+}
+
+class BiometricSecurityUpdateRequiredError extends FazpassException {
+  BiometricSecurityUpdateRequiredError(super.e);
+}
+```
+
+4. Create FazpassSettings class:
+
+```dart
+class FazpassSettings {
+  final List<SensitiveData> _sensitiveData;
+  final bool _isBiometricLevelHigh;
+
+  List<SensitiveData> get sensitiveData => _sensitiveData.toList();
+  bool get isBiometricLevelHigh => _isBiometricLevelHigh;
+
+  FazpassSettings._(this._sensitiveData, this._isBiometricLevelHigh);
+
+  factory FazpassSettings.fromString(String settingsString) {
+    final splitter = settingsString.split(";");
+    final sensitiveData = splitter[0].split(",")
+        .takeWhile((it) => it != "")
+        .map((it) => SensitiveData.values.firstWhere((element) => element.name == it))
+        .toList();
+    final isBiometricLevelHigh = bool.tryParse(splitter[1]) ?? false;
+
+    return FazpassSettings._(sensitiveData, isBiometricLevelHigh);
+  }
+
+  @override
+  String toString() => "${_sensitiveData.map((it) => it.name).join(",")};$_isBiometricLevelHigh";
+}
+
+class FazpassSettingsBuilder {
+  final List<SensitiveData> _sensitiveData;
+  bool _isBiometricLevelHigh;
+
+  List<SensitiveData> get sensitiveData => _sensitiveData.toList();
+  bool get isBiometricLevelHigh => _isBiometricLevelHigh;
+
+  FazpassSettingsBuilder()
+      : _sensitiveData = [],
+        _isBiometricLevelHigh = false;
+
+  FazpassSettingsBuilder.fromFazpassSettings(FazpassSettings settings)
+      : _sensitiveData = [...settings._sensitiveData],
+        _isBiometricLevelHigh = settings._isBiometricLevelHigh;
+
+  FazpassSettingsBuilder enableSelectedSensitiveData(List<SensitiveData> sensitiveData) {
+    for (final data in sensitiveData) {
+      if (_sensitiveData.contains(data)) {
+        continue;
+      } else {
+        _sensitiveData.add(data);
+      }
+    }
+    return this;
+  }
+
+  FazpassSettingsBuilder disableSelectedSensitiveData(List<SensitiveData> sensitiveData) {
+    for (final data in sensitiveData) {
+      if (_sensitiveData.contains(data)) {
+        _sensitiveData.remove(data);
+      } else {
+        continue;
+      }
+    }
+    return this;
+  }
+
+  FazpassSettingsBuilder setBiometricLevelToHigh() {
+    _isBiometricLevelHigh = true;
+    return this;
+  }
+
+  FazpassSettingsBuilder setBiometricLevelToLow() {
+    _isBiometricLevelHigh = false;
+    return this;
+  }
+
+  FazpassSettings build() => FazpassSettings._(
+      _sensitiveData,
+      _isBiometricLevelHigh);
+}
+```
 
 ## Getting Started
 
