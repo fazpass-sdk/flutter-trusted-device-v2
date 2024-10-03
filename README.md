@@ -397,16 +397,7 @@ class FazpassSettingsBuilder {
 ## Getting Started
 
 Before using this package, make sure to contact us first to get a public key and an FCM App ID (iOS only).
-
-This package main purpose is to generate meta which you can use to communicate with Fazpass rest API. But
-before calling generate meta method, you have to initialize it first by calling this method:
-```dart
-Fazpass.instance.init(
-    androidAssetName: 'AndroidAssetName.pub',
-    iosAssetName: 'iosAssetName',
-    iosFcmAppId: 'iosFcmAppId'
-);
-```
+This package main purpose is to generate meta which you can use to communicate with Fazpass rest API.
 
 ### Getting Started on Android
 
