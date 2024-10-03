@@ -164,7 +164,7 @@ class FazpassCDStreamHandler(
 }
 ```
 
-### Using native code in Flutter
+### Using Written Native Code in Flutter
 
 1. Create Fazpass class:
 
