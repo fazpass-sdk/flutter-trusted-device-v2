@@ -15,7 +15,7 @@ Android 24, IOS 13.0
 For installation, please refer to these documentation:
 
 Android: https://github.com/fazpass/seamless-documentation/blob/main/README.Android.md#installation <br>
-IOS: https://github.com/fazpass/seamless-documentation/blob/main/README.iOS.md#installation <br>
+IOS (Use Cocoapods Intallation): https://github.com/fazpass/seamless-documentation/blob/main/README.iOS.md#installation <br>
 
 After the installation is finished, go back immediately to this documentation.
 
