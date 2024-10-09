@@ -168,7 +168,8 @@ class FazpassCDStreamHandler(
 
 Make sure Fazpass SDK is installed correctly by importing the SDK in your ios project. If there is no error, then continue reading.
 
-1. Create FazpassPlugin class:
+1. Refer to this [Flutter Official documentation](https://docs.flutter.dev/platform-integration/platform-channels#step-4-add-an-ios-platform-specific-implementation) to setup native code writing
+2. Create FazpassMethodCallHandler class:
 
 ```swift
 import Flutter
