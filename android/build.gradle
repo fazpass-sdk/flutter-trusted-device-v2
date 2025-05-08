@@ -20,6 +20,7 @@ rootProject.allprojects {
         mavenCentral()
         maven {
             url 'https://jitpack.io'
+            credentials { username fazpassAuthToken }
         }
     }
 }
@@ -53,7 +54,7 @@ android {
     dependencies {
         testImplementation 'org.jetbrains.kotlin:kotlin-test'
         testImplementation 'org.mockito:mockito-core:5.0.0'
-        implementation 'com.github.fazpass-sdk:android-trusted-device-v2:3.0.0'
+        implementation 'com.github.fazpass-sdk:android-trusted-device-v2:americanbobtail-v1'
     }
 
     testOptions {
