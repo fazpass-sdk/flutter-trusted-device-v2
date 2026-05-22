@@ -13,10 +13,9 @@ A new Flutter plugin project.
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Your Company' => 'email@example.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
+  s.source_files = 'flutter_trusted_device_v2/Sources/flutter_trusted_device_v2/**/*'
   s.static_framework = true
   s.dependency 'Flutter'
-  s.dependency 'ios-trusted-device-v2'
   s.platform = :ios, '13.0'
 
   # Flutter.framework does not contain a i386 slice.

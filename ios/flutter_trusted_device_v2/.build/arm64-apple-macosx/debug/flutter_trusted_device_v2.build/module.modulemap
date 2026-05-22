@@ -1,0 +1,4 @@
+module flutter_trusted_device_v2 {
+    header "/Users/anvarisy/Citcall/Sdk/flutter-trusted-device-v2/ios/flutter_trusted_device_v2/.build/arm64-apple-macosx/debug/flutter_trusted_device_v2.build/flutter_trusted_device_v2-Swift.h"
+    requires objc
+}
